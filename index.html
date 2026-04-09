@@ -21,8 +21,16 @@
     --amber: #f5a623;
     --red: #f04a5e;
     --teal: #0dd6c8;
+    --pink: #e879f9;
+    --sky: #38bdf8;
     --mono: 'Space Mono', monospace;
     --sans: 'DM Sans', sans-serif;
+    /* Status colors */
+    --s-na: #5a6282;
+    --s-applied: #4f8ef7;
+    --s-test: #f5a623;
+    --s-result: #22d67a;
+    --s-tbd: #7c5cf6;
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -35,7 +43,6 @@
     overflow-x: hidden;
   }
 
-  /* GRID BACKGROUND */
   body::before {
     content: '';
     position: fixed; inset: 0;
@@ -49,7 +56,6 @@
 
   .page { position: relative; z-index: 1; max-width: 1400px; margin: 0 auto; padding: 0 24px 60px; }
 
-  /* HEADER */
   header {
     padding: 36px 0 28px;
     border-bottom: 1px solid var(--border);
@@ -57,212 +63,132 @@
     display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-end; justify-content: space-between;
   }
 
-  .header-title {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--accent);
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    margin-bottom: 8px;
-  }
-
-  h1 {
-    font-family: var(--mono);
-    font-size: clamp(24px, 4vw, 38px);
-    font-weight: 700;
-    color: var(--text);
-    line-height: 1.1;
-  }
-
+  .header-title { font-family: var(--mono); font-size: 11px; color: var(--accent); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 8px; }
+  h1 { font-family: var(--mono); font-size: clamp(24px, 4vw, 38px); font-weight: 700; color: var(--text); line-height: 1.1; }
   h1 span { color: var(--accent); }
+  .header-sub { font-size: 13px; color: var(--muted); margin-top: 6px; font-family: var(--mono); }
+  .live-dot { display: inline-block; width: 7px; height: 7px; background: var(--green); border-radius: 50%; margin-right: 6px; animation: pulse 2s infinite; }
 
-  .header-sub {
-    font-size: 13px;
-    color: var(--muted);
-    margin-top: 6px;
-    font-family: var(--mono);
-  }
-
-  .live-dot {
-    display: inline-block; width: 7px; height: 7px;
-    background: var(--green); border-radius: 50%;
-    margin-right: 6px;
-    animation: pulse 2s infinite;
-  }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(34,214,122,0.4); }
-    50% { opacity: 0.8; box-shadow: 0 0 0 5px rgba(34,214,122,0); }
-  }
+  @keyframes pulse { 0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(34,214,122,0.4); } 50% { opacity: 0.8; box-shadow: 0 0 0 5px rgba(34,214,122,0); } }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
   /* STATS */
-  .stats {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-    gap: 12px;
-    margin-bottom: 24px;
-  }
-
-  .stat {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 16px 18px;
-    position: relative;
-    overflow: hidden;
-    transition: border-color 0.2s;
-  }
-
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; margin-bottom: 24px; }
+  .stat { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; position: relative; overflow: hidden; transition: border-color 0.2s; }
   .stat:hover { border-color: var(--border2); }
-
-  .stat::after {
-    content: '';
-    position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
-  }
-
+  .stat::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px; }
   .stat.s-total::after { background: var(--accent); }
   .stat.s-open::after { background: var(--green); }
-  .stat.s-filled::after { background: var(--amber); }
-  .stat.s-closed::after { background: var(--dim); }
+  .stat.s-applied::after { background: var(--sky); }
+  .stat.s-test::after { background: var(--amber); }
   .stat.s-must::after { background: var(--red); }
   .stat.s-fee::after { background: var(--teal); }
-
-  .stat-n {
-    font-family: var(--mono);
-    font-size: 28px;
-    font-weight: 700;
-    line-height: 1;
-    margin-bottom: 4px;
-  }
-
+  .stat-n { font-family: var(--mono); font-size: 28px; font-weight: 700; line-height: 1; margin-bottom: 4px; }
   .stat.s-open .stat-n { color: var(--green); }
-  .stat.s-filled .stat-n { color: var(--amber); }
-  .stat.s-closed .stat-n { color: var(--muted); }
+  .stat.s-applied .stat-n { color: var(--sky); }
+  .stat.s-test .stat-n { color: var(--amber); }
   .stat.s-must .stat-n { color: var(--red); }
   .stat.s-fee .stat-n { color: var(--teal); font-size: 20px; }
   .stat.s-total .stat-n { color: var(--accent); }
-
   .stat-l { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; font-family: var(--mono); }
 
-  /* CONTROLS */
-  .controls {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 18px 20px;
-    margin-bottom: 24px;
-    display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end;
-  }
-
-  .ctrl-group { display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 140px; }
-  .ctrl-group label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; font-family: var(--mono); }
-
-  input[type="text"], select {
-    background: var(--bg);
-    border: 1px solid var(--border2);
-    color: var(--text);
-    padding: 9px 13px;
-    border-radius: 8px;
-    font-size: 13px;
-    font-family: var(--sans);
-    outline: none;
-    transition: border-color 0.2s;
-    width: 100%;
-  }
-
-  input[type="text"]:focus, select:focus { border-color: var(--accent); }
-  select option { background: var(--surface2); }
-
-  .search-wrap { position: relative; flex: 2; min-width: 200px; }
-  .search-wrap input { padding-left: 36px; }
-  .search-icon {
-    position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
-    color: var(--muted); font-size: 14px; pointer-events: none;
-  }
-
-  .ctrl-btn {
-    background: var(--surface2);
-    border: 1px solid var(--border2);
-    color: var(--text);
-    padding: 9px 16px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 1px;
-    transition: all 0.2s;
-    white-space: nowrap;
-    align-self: flex-end;
-  }
-
-  .ctrl-btn:hover { border-color: var(--accent); color: var(--accent); }
-  .ctrl-btn.active { background: var(--accent); border-color: var(--accent); color: #000; font-weight: 700; }
-
-  /* VIEW TOGGLES */
-  .view-toggle { display: flex; gap: 6px; align-self: flex-end; }
-  .vbtn {
-    width: 34px; height: 34px;
-    background: var(--bg); border: 1px solid var(--border2);
-    border-radius: 7px; cursor: pointer; display: flex; align-items: center; justify-content: center;
-    color: var(--muted); transition: all 0.2s; font-size: 14px;
-  }
-  .vbtn.active { border-color: var(--accent); color: var(--accent); background: rgba(79,142,247,0.1); }
-
-  /* TABS */
-  .tabs {
-    display: flex; gap: 4px; margin-bottom: 20px;
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 0;
-    overflow-x: auto; scrollbar-width: none;
-  }
-  .tabs::-webkit-scrollbar { display: none; }
-
-  .tab {
-    padding: 8px 18px 12px;
-    font-size: 12px; font-family: var(--mono);
-    letter-spacing: 0.5px;
-    color: var(--muted); cursor: pointer;
-    border-bottom: 2px solid transparent;
-    white-space: nowrap;
-    transition: all 0.2s;
-    margin-bottom: -1px;
-  }
-
-  .tab:hover { color: var(--text); }
-  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
-
-  .tab .cnt {
-    display: inline-block; margin-left: 6px;
-    background: var(--border2); border-radius: 10px;
-    padding: 1px 7px; font-size: 10px;
-  }
-
-  .tab.active .cnt { background: rgba(79,142,247,0.2); color: var(--accent); }
-
-  /* PROGRESS BAR */
-  .progress-bar {
-    background: var(--surface);
-    border: 1px solid var(--border);
+  /* URGENT STICKY STRIP */
+  .urgent-strip {
+    background: linear-gradient(135deg, rgba(240,74,94,0.12), rgba(245,166,35,0.08));
+    border: 1px solid rgba(240,74,94,0.3);
     border-radius: 10px;
     padding: 14px 18px;
-    margin-bottom: 24px;
-    display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+    margin-bottom: 20px;
+    animation: slideDown 0.4s ease;
   }
 
+  .urgent-strip-title {
+    font-family: var(--mono); font-size: 10px; font-weight: 700;
+    color: var(--red); text-transform: uppercase; letter-spacing: 2px;
+    margin-bottom: 10px; display: flex; align-items: center; gap: 8px;
+  }
+
+  .urgent-strip-title::before {
+    content: '⚡'; font-size: 13px;
+  }
+
+  .urgent-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+
+  .urgent-chip {
+    background: rgba(240,74,94,0.1);
+    border: 1px solid rgba(240,74,94,0.25);
+    border-radius: 8px; padding: 6px 12px;
+    display: flex; flex-direction: column; gap: 2px;
+    cursor: pointer; transition: border-color 0.2s;
+    text-decoration: none;
+  }
+
+  .urgent-chip:hover { border-color: var(--red); }
+  .urgent-chip .uc-inst { font-family: var(--mono); font-size: 9px; color: var(--red); font-weight: 700; letter-spacing: 1px; }
+  .urgent-chip .uc-course { font-size: 11px; color: var(--text); font-weight: 500; }
+  .urgent-chip .uc-days { font-family: var(--mono); font-size: 10px; color: var(--amber); }
+
+  /* ALERT BANNER */
+  .alert-banner {
+    background: rgba(240,74,94,0.08);
+    border: 1px solid rgba(240,74,94,0.25);
+    border-radius: 10px;
+    padding: 12px 18px;
+    margin-bottom: 20px;
+    font-size: 12px; color: var(--text);
+    display: none; align-items: center; gap: 10px;
+    font-family: var(--mono);
+    animation: slideDown 0.3s ease;
+  }
+  .alert-banner .alert-icon { color: var(--red); font-size: 16px; }
+
+  /* PROGRESS */
+  .progress-bar { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 18px; margin-bottom: 24px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
   .pb-label { font-size: 11px; color: var(--muted); font-family: var(--mono); white-space: nowrap; }
-
-  .pb-track {
-    flex: 1; height: 6px; background: var(--border);
-    border-radius: 3px; overflow: hidden; min-width: 100px;
-  }
-
+  .pb-track { flex: 1; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; min-width: 100px; }
   .pb-fill { height: 100%; border-radius: 3px; transition: width 0.5s ease; }
-  .pb-filled { background: var(--amber); }
+  .pb-applied { background: var(--sky); }
   .pb-open { background: var(--green); }
 
-  /* GRID VIEW */
-  #grid-view { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 14px; }
+  /* CONTROLS */
+  .controls { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; margin-bottom: 24px; display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; }
+  .ctrl-group { display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 140px; }
+  .ctrl-group label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; font-family: var(--mono); }
+  input[type="text"], select { background: var(--bg); border: 1px solid var(--border2); color: var(--text); padding: 9px 13px; border-radius: 8px; font-size: 13px; font-family: var(--sans); outline: none; transition: border-color 0.2s; width: 100%; }
+  input[type="text"]:focus, select:focus { border-color: var(--accent); }
+  select option { background: var(--surface2); }
+  .search-wrap { position: relative; flex: 2; min-width: 200px; }
+  .search-wrap input { padding-left: 36px; }
+  .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 14px; pointer-events: none; }
+  .ctrl-btn { background: var(--surface2); border: 1px solid var(--border2); color: var(--text); padding: 9px 16px; border-radius: 8px; cursor: pointer; font-family: var(--mono); font-size: 11px; letter-spacing: 1px; transition: all 0.2s; white-space: nowrap; align-self: flex-end; }
+  .ctrl-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .ctrl-btn.active { background: var(--accent); border-color: var(--accent); color: #000; font-weight: 700; }
+  .ctrl-btn.danger-btn:hover { border-color: var(--red); color: var(--red); }
+  .view-toggle { display: flex; gap: 6px; align-self: flex-end; }
+  .vbtn { width: 34px; height: 34px; background: var(--bg); border: 1px solid var(--border2); border-radius: 7px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--muted); transition: all 0.2s; font-size: 14px; }
+  .vbtn.active { border-color: var(--accent); color: var(--accent); background: rgba(79,142,247,0.1); }
+  .filled-toggle { display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 12px; color: var(--muted); user-select: none; align-self: flex-end; padding: 9px 0; }
+  .filled-toggle input { accent-color: var(--amber); width: 14px; height: 14px; cursor: pointer; }
+  .filled-toggle:hover { color: var(--text); }
 
+  /* TABS */
+  .tabs { display: flex; gap: 4px; margin-bottom: 20px; border-bottom: 1px solid var(--border); overflow-x: auto; scrollbar-width: none; }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab { padding: 8px 18px 12px; font-size: 12px; font-family: var(--mono); letter-spacing: 0.5px; color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; transition: all 0.2s; margin-bottom: -1px; }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .tab .cnt { display: inline-block; margin-left: 6px; background: var(--border2); border-radius: 10px; padding: 1px 7px; font-size: 10px; }
+  .tab.active .cnt { background: rgba(79,142,247,0.2); color: var(--accent); }
+
+  /* ACTION BAR */
+  .action-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; align-items: center; }
+  .result-count { font-size: 12px; color: var(--muted); font-family: var(--mono); margin-right: auto; }
+
+  /* GRID */
+  #grid-view { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; }
+
+  /* CARD — fixed min-height for uniform look */
   .card {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -273,210 +199,106 @@
     transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
     animation: fadeIn 0.3s ease forwards;
     cursor: default;
+    display: flex; flex-direction: column;
+    min-height: 360px;
   }
 
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-
-  .card:hover {
-    transform: translateY(-3px);
-    border-color: var(--border2);
-    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-  }
-
+  .card:hover { transform: translateY(-3px); border-color: var(--border2); box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
   .card.urgent { border-left: 3px solid var(--red); }
-  .card.filled { opacity: 0.5; }
+  .card.closed-card { opacity: 0.5; }
   .card.must-apply { border-top: 2px solid var(--red); }
-
-  .card-accent-bar {
-    position: absolute; top: 0; right: 0;
-    width: 3px; height: 100%;
-    border-radius: 0 12px 12px 0;
-  }
+  .card-accent-bar { position: absolute; top: 0; right: 0; width: 3px; height: 100%; border-radius: 0 12px 12px 0; }
 
   .card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; gap: 8px; }
+  .inst-name { font-family: var(--mono); font-size: 10px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1.5px; }
 
-  .inst-name {
-    font-family: var(--mono);
-    font-size: 10px; font-weight: 700;
-    color: var(--accent);
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-  }
+  /* STATUS BADGE — now 4 states */
+  .status-badge { font-family: var(--mono); font-size: 9px; font-weight: 700; padding: 3px 9px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; }
+  .b-na       { background: rgba(90,98,130,0.12); color: var(--muted); border: 1px solid rgba(90,98,130,0.25); }
+  .b-applied  { background: rgba(56,189,248,0.12); color: var(--sky); border: 1px solid rgba(56,189,248,0.3); }
+  .b-test     { background: rgba(245,166,35,0.12); color: var(--amber); border: 1px solid rgba(245,166,35,0.3); }
+  .b-result   { background: rgba(34,214,122,0.12); color: var(--green); border: 1px solid rgba(34,214,122,0.3); }
+  .b-closed   { background: rgba(58,64,96,0.2); color: var(--dim); border: 1px solid rgba(58,64,96,0.3); }
 
-  .status-badge {
-    font-family: var(--mono);
-    font-size: 9px; font-weight: 700;
-    padding: 3px 9px; border-radius: 20px;
-    text-transform: uppercase; letter-spacing: 0.5px;
-    white-space: nowrap;
-  }
-
-  .b-open { background: rgba(34,214,122,0.12); color: var(--green); border: 1px solid rgba(34,214,122,0.25); }
-  .b-filled { background: rgba(245,166,35,0.12); color: var(--amber); border: 1px solid rgba(245,166,35,0.25); }
-  .b-closed { background: rgba(90,98,130,0.12); color: var(--muted); border: 1px solid rgba(90,98,130,0.25); }
-
-  .course-name {
-    font-size: 15px; font-weight: 600;
-    color: var(--text); margin-bottom: 12px;
-    line-height: 1.3; min-height: 40px;
-  }
-
-  .pills { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 12px; }
-
-  .pill {
-    font-size: 10px; font-family: var(--mono);
-    padding: 2px 9px; border-radius: 20px;
-    font-weight: 700; letter-spacing: 0.3px;
-  }
-
-  .p-must { background: rgba(240,74,94,0.15); color: var(--red); border: 1px solid rgba(240,74,94,0.3); }
+  .course-name { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 12px; line-height: 1.3; min-height: 40px; }
+  .pills { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 12px; min-height: 24px; }
+  .pill { font-size: 10px; font-family: var(--mono); padding: 2px 9px; border-radius: 20px; font-weight: 700; letter-spacing: 0.3px; }
+  .p-must  { background: rgba(240,74,94,0.15); color: var(--red); border: 1px solid rgba(240,74,94,0.3); }
   .p-maybe { background: rgba(79,142,247,0.12); color: var(--accent); border: 1px solid rgba(79,142,247,0.25); }
-  .p-no { background: rgba(90,98,130,0.1); color: var(--muted); border: 1px solid var(--border2); }
+  .p-no    { background: rgba(90,98,130,0.1); color: var(--muted); border: 1px solid var(--border2); }
+  .p-tbd   { background: rgba(124,92,246,0.12); color: var(--accent2); border: 1px solid rgba(124,92,246,0.25); }
+
+  .deadline-bar { height: 3px; background: var(--border); border-radius: 2px; margin-bottom: 14px; overflow: hidden; }
+  .dl-fill { height: 100%; border-radius: 2px; transition: width 0.3s; }
 
   .card-meta { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
-
-  .meta-row {
-    display: flex; justify-content: space-between; align-items: center;
-    font-size: 12px;
-  }
-
+  .meta-row { display: flex; justify-content: space-between; align-items: center; font-size: 12px; min-height: 20px; }
   .meta-key { color: var(--muted); font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
   .meta-val { font-weight: 500; color: var(--text); }
   .meta-val.danger { color: var(--red); }
   .meta-val.warn { color: var(--amber); }
   .meta-val.ok { color: var(--green); }
   .meta-val.dim { color: var(--muted); }
+  .meta-val.tbd { color: var(--accent2); font-family: var(--mono); font-size: 10px; }
 
-  .deadline-bar {
-    height: 3px; background: var(--border);
-    border-radius: 2px; margin-bottom: 14px; overflow: hidden;
+  /* Spacer to push bottom controls to card base */
+  .card-spacer { flex: 1; }
+
+  /* STATUS SELECTOR */
+  .status-select-wrap { margin-bottom: 10px; }
+  .status-select-label { font-size: 10px; color: var(--muted); font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+  .status-select { display: flex; gap: 4px; flex-wrap: wrap; }
+  .ss-btn {
+    font-family: var(--mono); font-size: 9px; font-weight: 700; letter-spacing: 0.5px;
+    padding: 4px 10px; border-radius: 20px; cursor: pointer; border: 1px solid transparent;
+    transition: all 0.15s; text-transform: uppercase;
+    background: var(--surface2); color: var(--muted); border-color: var(--border);
   }
+  .ss-btn:hover { color: var(--text); border-color: var(--border2); }
+  .ss-btn.sel-na     { background: rgba(90,98,130,0.2); color: var(--muted); border-color: rgba(90,98,130,0.4); }
+  .ss-btn.sel-applied { background: rgba(56,189,248,0.15); color: var(--sky); border-color: rgba(56,189,248,0.35); }
+  .ss-btn.sel-test    { background: rgba(245,166,35,0.15); color: var(--amber); border-color: rgba(245,166,35,0.35); }
+  .ss-btn.sel-result  { background: rgba(34,214,122,0.15); color: var(--green); border-color: rgba(34,214,122,0.35); }
 
-  .dl-fill { height: 100%; border-radius: 2px; transition: width 0.3s; }
-
-  .apply-btn {
-    display: block; text-align: center;
-    padding: 9px;
-    border-radius: 8px;
-    font-size: 12px; font-weight: 600;
-    font-family: var(--mono);
-    text-decoration: none;
-    letter-spacing: 0.5px;
-    transition: all 0.2s;
-    border: 1px solid transparent;
-  }
-
-  .apply-btn.go {
-    background: rgba(79,142,247,0.12);
-    border-color: rgba(79,142,247,0.3);
-    color: var(--accent);
-  }
-
-  .apply-btn.go:hover {
-    background: var(--accent);
-    color: #000;
-    transform: translateY(-1px);
-  }
-
-  .apply-btn.done { background: rgba(245,166,35,0.08); border-color: rgba(245,166,35,0.2); color: var(--amber); cursor: default; }
+  .apply-btn { display: block; text-align: center; padding: 9px; border-radius: 8px; font-size: 12px; font-weight: 600; font-family: var(--mono); text-decoration: none; letter-spacing: 0.5px; transition: all 0.2s; border: 1px solid transparent; }
+  .apply-btn.go { background: rgba(79,142,247,0.12); border-color: rgba(79,142,247,0.3); color: var(--accent); }
+  .apply-btn.go:hover { background: var(--accent); color: #000; transform: translateY(-1px); }
   .apply-btn.off { background: var(--surface2); border-color: var(--border); color: var(--dim); cursor: default; }
 
-  .note-toggle {
-    margin-top: 8px; font-size: 11px;
-    color: var(--muted); cursor: pointer;
-    text-align: center; font-family: var(--mono);
-    transition: color 0.2s;
-  }
+  .note-toggle { margin-top: 8px; font-size: 11px; color: var(--muted); cursor: pointer; text-align: center; font-family: var(--mono); transition: color 0.2s; }
   .note-toggle:hover { color: var(--accent); }
-
-  .note-area {
-    display: none; margin-top: 8px;
-  }
-
-  .note-area textarea {
-    width: 100%; background: var(--bg);
-    border: 1px solid var(--border2); color: var(--text);
-    border-radius: 6px; padding: 8px 10px; font-size: 12px;
-    font-family: var(--sans); resize: vertical; min-height: 60px;
-    outline: none;
-  }
-
+  .note-area { display: none; margin-top: 8px; }
+  .note-area textarea { width: 100%; background: var(--bg); border: 1px solid var(--border2); color: var(--text); border-radius: 6px; padding: 8px 10px; font-size: 12px; font-family: var(--sans); resize: vertical; min-height: 60px; outline: none; }
   .note-area textarea:focus { border-color: var(--accent); }
 
   /* LIST VIEW */
   #list-view { display: none; }
-
-  .list-table {
-    width: 100%; border-collapse: collapse;
-    font-size: 13px;
-  }
-
-  .list-table thead th {
-    font-family: var(--mono); font-size: 10px;
-    text-transform: uppercase; letter-spacing: 1px;
-    color: var(--muted); padding: 10px 14px;
-    text-align: left; border-bottom: 1px solid var(--border);
-    cursor: pointer; white-space: nowrap;
-    user-select: none;
-  }
-
+  .list-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .list-table thead th { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--border); cursor: pointer; white-space: nowrap; user-select: none; }
   .list-table thead th:hover { color: var(--accent); }
   .list-table thead th .sort-arrow { margin-left: 4px; color: var(--accent); }
-
-  .list-table tbody tr {
-    border-bottom: 1px solid var(--border);
-    transition: background 0.15s;
-    animation: fadeIn 0.3s ease forwards;
-  }
-
+  .list-table tbody tr { border-bottom: 1px solid var(--border); transition: background 0.15s; animation: fadeIn 0.3s ease forwards; }
   .list-table tbody tr:hover { background: var(--surface2); }
-  .list-table tbody tr.filled-row { opacity: 0.5; }
-  .list-table tbody tr.urgent-row td:first-child { border-left: 3px solid var(--red); }
-
-  .list-table td {
-    padding: 11px 14px; vertical-align: middle;
-  }
-
+  .list-table td { padding: 11px 14px; vertical-align: middle; }
   .list-inst { font-family: var(--mono); font-size: 11px; color: var(--accent); font-weight: 700; }
   .list-course { font-weight: 500; }
   .list-link { color: var(--accent); text-decoration: none; font-family: var(--mono); font-size: 11px; }
   .list-link:hover { text-decoration: underline; }
 
-  /* TIMELINE VIEW */
+  /* TIMELINE */
   #timeline-view { display: none; }
-
   .timeline-group { margin-bottom: 28px; }
-
-  .timeline-date {
-    font-family: var(--mono); font-size: 12px;
-    color: var(--accent); padding: 6px 0;
-    margin-bottom: 10px;
-    border-bottom: 1px solid var(--border);
-    display: flex; align-items: center; gap: 12px;
-  }
-
-  .tl-badge {
-    font-size: 10px; padding: 2px 8px; border-radius: 10px;
-    font-family: var(--mono);
-  }
-
-  .tl-today { background: rgba(79,142,247,0.15); color: var(--accent); }
+  .timeline-date { font-family: var(--mono); font-size: 12px; color: var(--accent); padding: 6px 0; margin-bottom: 10px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+  .tl-badge { font-size: 10px; padding: 2px 8px; border-radius: 10px; font-family: var(--mono); }
+  .tl-today  { background: rgba(79,142,247,0.15); color: var(--accent); }
   .tl-urgent { background: rgba(240,74,94,0.15); color: var(--red); }
-  .tl-past { background: rgba(90,98,130,0.1); color: var(--muted); }
-
+  .tl-past   { background: rgba(90,98,130,0.1); color: var(--muted); }
   .timeline-items { display: flex; flex-wrap: wrap; gap: 8px; }
-
-  .tl-chip {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px; padding: 8px 14px;
-    font-size: 12px; transition: border-color 0.2s;
-  }
-
+  .tl-chip { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 8px 14px; font-size: 12px; transition: border-color 0.2s; }
   .tl-chip:hover { border-color: var(--border2); }
   .tl-chip .tl-inst { font-family: var(--mono); font-size: 10px; color: var(--accent); display: block; margin-bottom: 2px; }
   .tl-chip .tl-name { color: var(--text); font-weight: 500; }
-  .tl-chip.filled-chip { opacity: 0.4; }
+  .tl-chip.closed-chip { opacity: 0.4; }
   .tl-chip.urgent-chip { border-left: 3px solid var(--red); }
 
   /* EMPTY */
@@ -484,37 +306,29 @@
   .empty-icon { font-size: 40px; margin-bottom: 12px; opacity: 0.4; }
   .empty-msg { font-family: var(--mono); font-size: 13px; }
 
-  /* DEADLINE ALERT BANNER */
-  .alert-banner {
-    background: rgba(240,74,94,0.08);
-    border: 1px solid rgba(240,74,94,0.25);
-    border-radius: 10px;
-    padding: 12px 18px;
-    margin-bottom: 20px;
-    font-size: 12px;
-    color: var(--text);
-    display: none;
-    align-items: center; gap: 10px;
-    font-family: var(--mono);
-  }
+  /* BACKUP/RESTORE MODAL */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 1000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+  .modal-overlay.open { display: flex; }
+  .modal { background: var(--surface); border: 1px solid var(--border2); border-radius: 14px; padding: 28px; width: 90%; max-width: 540px; animation: slideDown 0.3s ease; }
+  .modal h2 { font-family: var(--mono); font-size: 16px; color: var(--text); margin-bottom: 6px; }
+  .modal p { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+  .modal-btns { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
+  .modal textarea { width: 100%; background: var(--bg); border: 1px solid var(--border2); color: var(--text); border-radius: 8px; padding: 12px; font-size: 11px; font-family: var(--mono); height: 160px; resize: vertical; outline: none; margin-bottom: 12px; }
+  .modal textarea:focus { border-color: var(--accent); }
+  .modal-close { float: right; background: none; border: none; color: var(--muted); cursor: pointer; font-size: 18px; transition: color 0.2s; }
+  .modal-close:hover { color: var(--text); }
+  .modal-note { font-size: 11px; color: var(--muted); font-family: var(--mono); }
+  .modal .ctrl-btn.accent { background: rgba(79,142,247,0.15); border-color: rgba(79,142,247,0.3); color: var(--accent); }
+  .modal .ctrl-btn.accent:hover { background: var(--accent); color: #000; }
 
-  .alert-banner .alert-icon { color: var(--red); font-size: 16px; }
-
-  /* EXPORT / ACTIONS */
-  .action-bar {
-    display: flex; gap: 8px; flex-wrap: wrap;
-    margin-bottom: 20px; align-items: center;
-  }
-
-  .result-count { font-size: 12px; color: var(--muted); font-family: var(--mono); margin-right: auto; }
-
-  /* DARK SCROLLBAR */
   ::-webkit-scrollbar { width: 6px; height: 6px; }
   ::-webkit-scrollbar-track { background: var(--bg); }
   ::-webkit-scrollbar-thumb { background: var(--dim); border-radius: 3px; }
   ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
 
-  /* RESPONSIVE */
+  [data-tip] { position: relative; cursor: help; }
+  [data-tip]:hover::after { content: attr(data-tip); position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%); background: var(--surface2); color: var(--text); border: 1px solid var(--border2); border-radius: 6px; padding: 5px 10px; font-size: 11px; white-space: nowrap; z-index: 100; font-family: var(--mono); pointer-events: none; }
+
   @media (max-width: 700px) {
     .page { padding: 0 14px 40px; }
     h1 { font-size: 22px; }
@@ -522,23 +336,6 @@
     .list-table thead th:nth-child(n+4) { display: none; }
     .list-table td:nth-child(n+4) { display: none; }
   }
-
-  /* TOOLTIP */
-  [data-tip] { position: relative; cursor: help; }
-  [data-tip]:hover::after {
-    content: attr(data-tip);
-    position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%);
-    background: var(--surface2); color: var(--text);
-    border: 1px solid var(--border2); border-radius: 6px;
-    padding: 5px 10px; font-size: 11px; white-space: nowrap; z-index: 100;
-    font-family: var(--mono);
-    pointer-events: none;
-  }
-
-  /* CHECKBOX */
-  .filled-toggle { display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 12px; color: var(--muted); user-select: none; align-self: flex-end; padding: 9px 0; }
-  .filled-toggle input { accent-color: var(--amber); width: 14px; height: 14px; cursor: pointer; }
-  .filled-toggle:hover { color: var(--text); }
 </style>
 </head>
 <body>
@@ -554,6 +351,7 @@
   </header>
 
   <div class="stats" id="stats-bar"></div>
+  <div id="urgent-strip"></div>
 
   <div id="alert-banner" class="alert-banner">
     <span class="alert-icon">⚠</span>
@@ -561,11 +359,11 @@
   </div>
 
   <div id="progress-row" class="progress-bar">
-    <div class="pb-label">FORMS FILLED</div>
-    <div class="pb-track"><div class="pb-fill pb-filled" id="pb-filled"></div></div>
+    <div class="pb-label">APPLIED</div>
+    <div class="pb-track"><div class="pb-fill pb-applied" id="pb-filled"></div></div>
     <div class="pb-label" id="pb-label-filled">0 / 0</div>
     <div style="width:1px;height:20px;background:var(--border);margin:0 4px"></div>
-    <div class="pb-label">OPEN DEADLINES</div>
+    <div class="pb-label">OPEN</div>
     <div class="pb-track"><div class="pb-fill pb-open" id="pb-open"></div></div>
     <div class="pb-label" id="pb-label-open">0 remaining</div>
   </div>
@@ -578,12 +376,14 @@
     </div>
 
     <div class="ctrl-group">
-      <label>Status</label>
+      <label>App Status</label>
       <select id="filt-status">
         <option value="all">All Status</option>
-        <option value="open">Open Only</option>
-        <option value="filled">Filled Only</option>
-        <option value="closed">Closed Only</option>
+        <option value="open">Open (not applied)</option>
+        <option value="applied">Applied</option>
+        <option value="test">Test/Interview</option>
+        <option value="result">Result Awaited</option>
+        <option value="closed">Closed/Past</option>
       </select>
     </div>
 
@@ -594,6 +394,7 @@
         <option value="Must">Must Apply</option>
         <option value="Maybe">Maybe</option>
         <option value="No">Low Priority</option>
+        <option value="TBD">TBD</option>
       </select>
     </div>
 
@@ -628,11 +429,10 @@
     </div>
 
     <label class="filled-toggle">
-      <input type="checkbox" id="hide-filled"> Hide filled
+      <input type="checkbox" id="hide-closed" checked> Hide closed
     </label>
-
     <label class="filled-toggle">
-      <input type="checkbox" id="hide-closed"> Hide closed
+      <input type="checkbox" id="hide-applied"> Hide applied
     </label>
 
     <button class="ctrl-btn" onclick="resetFilters()">↺ Reset</button>
@@ -648,7 +448,8 @@
     <span class="result-count" id="result-count">Loading…</span>
     <button class="ctrl-btn" onclick="exportCSV()">↓ Export CSV</button>
     <button class="ctrl-btn" onclick="printView()">⎙ Print</button>
-    <button class="ctrl-btn" onclick="copyMustList()">⧉ Copy Must-Apply List</button>
+    <button class="ctrl-btn" onclick="copyMustList()">⧉ Copy Must-Apply</button>
+    <button class="ctrl-btn" onclick="openBackupModal()">⇅ Backup / Restore</button>
   </div>
 
   <div class="tabs" id="tabs-bar"></div>
@@ -665,7 +466,7 @@
             <th onclick="sortByCol('deadline')">Deadline <span class="sort-arrow" id="th-deadline"></span></th>
             <th onclick="sortByCol('days')">Days Left <span class="sort-arrow" id="th-days"></span></th>
             <th onclick="sortByCol('fee')">Fee <span class="sort-arrow" id="th-fee"></span></th>
-            <th>Status</th>
+            <th>App Status</th>
             <th>Link</th>
           </tr>
         </thead>
@@ -677,94 +478,158 @@
 
 </div>
 
+<!-- BACKUP / RESTORE MODAL -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal">
+    <button class="modal-close" onclick="closeBackupModal()">✕</button>
+    <h2>⇅ Backup &amp; Restore</h2>
+    <p>Export your current tracker state (applied status, notes) as JSON, or paste a backup to restore it.</p>
+    <div class="modal-btns">
+      <button class="ctrl-btn accent" onclick="doExportJSON()">↓ Download JSON Backup</button>
+      <button class="ctrl-btn" onclick="loadRestoreArea()">↑ Paste to Restore</button>
+    </div>
+    <div id="restore-area" style="display:none">
+      <textarea id="restore-json" placeholder="Paste your JSON backup here…"></textarea>
+      <div class="modal-btns">
+        <button class="ctrl-btn accent" onclick="doRestore()">Restore State</button>
+        <button class="ctrl-btn danger-btn" onclick="document.getElementById('restore-area').style.display='none'">Cancel</button>
+      </div>
+    </div>
+    <div class="modal-note">Your data is stored in localStorage and never leaves your browser.</div>
+  </div>
+</div>
+
 <script>
+// ─── DATA ────────────────────────────────────────────────────────────────────
+// chance: "Must" | "Maybe" | "No" | "TBD" (was empty → TBD)
+// appStatus: "Not Applied" | "Applied" | "Test/Interview" | "Result"
+// interview_date / test_date: string or null
 const DATA = [
-  {inst:"IISc",course:"MTech TA AI",subject:"AI",type:"MTech TA",chance:"Maybe",deadline:"2026-04-06",filled:true,link:"https://admissions.iisc.ac.in/",fee:800},
-  {inst:"IISc",course:"MTech TA CDS",subject:"CDS",type:"MTech TA",chance:"Maybe",deadline:"2026-04-06",filled:true,link:"https://admissions.iisc.ac.in/",fee:800},
-  {inst:"IISc",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"Maybe",deadline:"2026-04-06",filled:true,link:"https://admissions.iisc.ac.in/",fee:800},
-  {inst:"IISc",course:"MTech RA CSE",subject:"CSE",type:"MTech RA",chance:"Maybe",deadline:"2026-04-06",filled:true,link:"https://admissions.iisc.ac.in/",fee:800},
-  {inst:"IISc",course:"MTech RA CDS",subject:"CDS",type:"MTech RA",chance:"Maybe",deadline:"2026-04-06",filled:true,link:"https://admissions.iisc.ac.in/",fee:800},
-  {inst:"IIT Bombay",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"No",deadline:"2026-04-06",filled:false,link:"https://www.iitb.ac.in/newacadhome/msResearch.jsp",fee:150},
-  {inst:"IIT Bombay",course:"MTech RA CSE",subject:"CSE",type:"MTech RA",chance:"Maybe",deadline:"2026-04-10",filled:false,link:"https://www.iitb.ac.in/newacadhome/msResearch.jsp",fee:0},
-  {inst:"IIT Bombay",course:"MS-R CSE",subject:"CSE",type:"MS-R",chance:"Maybe",deadline:"2026-04-10",filled:false,link:"https://www.iitb.ac.in/newacadhome/msResearch.jsp",fee:0},
-  {inst:"IIT Bombay",course:"MS-R CMInDS",subject:"CMInDS",type:"MS-R",chance:"Maybe",deadline:"2026-04-10",filled:false,link:"https://www.iitb.ac.in/newacadhome/msResearch.jsp",fee:0},
-  {inst:"IIT Madras",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"No",deadline:"2026-04-27",filled:false,link:"https://mtechadm.iitm.ac.in/",fee:300},
-  {inst:"IIT Madras",course:"MTech TA DSAI",subject:"DSAI",type:"MTech TA",chance:"No",deadline:"2026-04-27",filled:false,link:"https://mtechadm.iitm.ac.in/",fee:300},
-  {inst:"IIT Madras",course:"MS-R CSE",subject:"CSE",type:"MS-R",chance:"Maybe",deadline:"2026-04-01",filled:false,link:"https://mtechadm.iitm.ac.in/",fee:300},
-  {inst:"IIT Madras",course:"MS-R DSAI",subject:"DSAI",type:"MS-R",chance:"Maybe",deadline:"2026-04-01",filled:false,link:"https://mtechadm.iitm.ac.in/",fee:300},
-  {inst:"IIT Delhi",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"No",deadline:"2026-04-11",filled:false,link:"https://home.iitd.ac.in/admissions.php",fee:300},
-  {inst:"IIT Delhi",course:"MTech TA CTech",subject:"CTech",type:"MTech TA",chance:"Maybe",deadline:"2026-04-11",filled:false,link:"https://home.iitd.ac.in/admissions.php",fee:300},
-  {inst:"IIT Delhi",course:"MTech TA Robotics",subject:"Robotics",type:"MTech TA",chance:"Maybe",deadline:"2026-04-11",filled:false,link:"https://home.iitd.ac.in/admissions.php",fee:300},
-  {inst:"IIT Delhi",course:"MTech TA Cyber Security",subject:"Cyber Security",type:"MTech TA",chance:"Maybe",deadline:"2026-04-11",filled:false,link:"https://home.iitd.ac.in/admissions.php",fee:300},
-  {inst:"IIT Delhi",course:"MTech TA MINDS",subject:"MINDS",type:"MTech TA",chance:"Maybe",deadline:"2026-04-11",filled:false,link:"https://home.iitd.ac.in/admissions.php",fee:300},
-  {inst:"IIT Delhi",course:"MS-R CSE",subject:"CSE",type:"MS-R",chance:"Maybe",deadline:"2026-04-11",filled:false,link:"https://home.iitd.ac.in/admissions.php",fee:300},
-  {inst:"IIT Delhi",course:"MS-R MINDS",subject:"MINDS",type:"MS-R",chance:"Maybe",deadline:"2026-04-11",filled:false,link:"https://home.iitd.ac.in/admissions.php",fee:200},
-  {inst:"IIT Delhi",course:"MTech HVA CSE",subject:"CSE",type:"MTech HVA",chance:"Maybe",deadline:"2026-04-11",filled:false,link:"https://home.iitd.ac.in/admissions.php",fee:200},
-  {inst:"IIT Delhi",course:"MTech HVA MINDS",subject:"MINDS",type:"MTech HVA",chance:"Maybe",deadline:"2026-04-11",filled:false,link:"https://home.iitd.ac.in/admissions.php",fee:200},
-  {inst:"IIT Kanpur",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"No",deadline:"2026-04-13",filled:false,link:"https://www.iitk.ac.in/doaa/admission/",fee:500},
-  {inst:"IIT Kanpur",course:"MTech TA Cognitive Systems",subject:"Cognitive Systems",type:"MTech TA",chance:"Maybe",deadline:"2026-04-13",filled:false,link:"https://www.iitk.ac.in/doaa/admission/",fee:500},
-  {inst:"IIT Kanpur",course:"MS-R CSE",subject:"CSE",type:"MS-R",chance:"Maybe",deadline:"2026-04-13",filled:false,link:"https://www.iitk.ac.in/doaa/admission/",fee:500},
-  {inst:"IIT Kanpur",course:"MS-R Cyber Security",subject:"Cyber Security",type:"MS-R",chance:"Maybe",deadline:"2026-04-13",filled:false,link:"https://www.iitk.ac.in/doaa/admission/",fee:500},
-  {inst:"IIT Hyderabad",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"Maybe",deadline:"2026-04-17",filled:false,link:"https://erp.iith.ac.in/Admissions/#/register",fee:250},
-  {inst:"IIT Hyderabad",course:"MTech TA AI",subject:"AI",type:"MTech TA",chance:"Maybe",deadline:"2026-04-17",filled:false,link:"https://erp.iith.ac.in/Admissions/#/register",fee:250},
-  {inst:"IIT Hyderabad",course:"MTech RA CSE",subject:"CSE",type:"MTech RA",chance:"Maybe",deadline:"2026-04-17",filled:false,link:"https://erp.iith.ac.in/Admissions/#/register",fee:250},
-  {inst:"IIT Hyderabad",course:"MTech RA AI",subject:"AI",type:"MTech RA",chance:"Maybe",deadline:"2026-04-17",filled:false,link:"https://erp.iith.ac.in/Admissions/#/register",fee:250},
-  {inst:"IIT Hyderabad",course:"Self Sponsor CSE",subject:"CSE",type:"Self Sponsor",chance:"Must",deadline:"2026-04-17",filled:false,link:"https://erp.iith.ac.in/Admissions/#/register",fee:500},
-  {inst:"IIT Hyderabad",course:"Self Sponsor AI",subject:"AI",type:"Self Sponsor",chance:"Must",deadline:"2026-04-17",filled:false,link:"https://erp.iith.ac.in/Admissions/#/register",fee:500},
-  {inst:"IIT Hyderabad",course:"MTech TA Smart Mobility",subject:"Smart Mobility",type:"MTech TA",chance:"",deadline:"2026-04-17",filled:false,link:"https://erp.iith.ac.in/Admissions/#/register",fee:250},
-  {inst:"IIT Kharagpur",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"Maybe",deadline:"2026-04-18",filled:false,link:"https://gateoffice.iitkgp.ac.in/jmp/",fee:250},
-  {inst:"IIT Kharagpur",course:"MTech TA OR & Data Analytics",subject:"Data Analytics",type:"MTech TA",chance:"Maybe",deadline:"2026-04-18",filled:false,link:"https://gateoffice.iitkgp.ac.in/jmp/",fee:0},
-  {inst:"IIT Kharagpur",course:"MTech TA Safety Engineering",subject:"Safety Engineering",type:"MTech TA",chance:"Maybe",deadline:"2026-04-18",filled:false,link:"https://gateoffice.iitkgp.ac.in/jmp/",fee:0},
-  {inst:"IIT Kharagpur",course:"MTech TA AI",subject:"AI",type:"MTech TA",chance:"Maybe",deadline:"2026-04-18",filled:false,link:"https://gateoffice.iitkgp.ac.in/jmp/",fee:0},
-  {inst:"IIT Kharagpur",course:"MTech TA Embedded Controls",subject:"Embedded Systems",type:"MTech TA",chance:"",deadline:"2026-04-18",filled:false,link:"https://gateoffice.iitkgp.ac.in/jmp/",fee:0},
-  {inst:"IIT Guwahati",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"Maybe",deadline:"2026-04-10",filled:false,link:"https://www.iitg.ac.in/acad/admission/",fee:300},
-  {inst:"IIT Guwahati",course:"MTech TA DS",subject:"Data Science",type:"MTech TA",chance:"Maybe",deadline:"2026-04-10",filled:false,link:"https://www.iitg.ac.in/acad/admission/",fee:300},
-  {inst:"IIT Guwahati",course:"MTech TA Robotics & AI",subject:"Robotics",type:"MTech TA",chance:"Maybe",deadline:"2026-04-10",filled:false,link:"https://www.iitg.ac.in/acad/admission/",fee:300},
-  {inst:"IIT Roorkee",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"",deadline:"2026-04-20",filled:false,link:"https://iitr.ac.in/admissions/",fee:0},
-  {inst:"IIT Roorkee",course:"MTech TA AI",subject:"AI",type:"MTech TA",chance:"",deadline:"2026-04-20",filled:false,link:"https://iitr.ac.in/admissions/",fee:0},
-  {inst:"IIT Roorkee",course:"MTech TA DS",subject:"Data Science",type:"MTech TA",chance:"",deadline:"2026-04-20",filled:false,link:"https://iitr.ac.in/admissions/",fee:0},
-  {inst:"IIT Roorkee",course:"MTech TA Math Computing",subject:"Math Computing",type:"MTech TA",chance:"",deadline:"2026-04-20",filled:false,link:"https://iitr.ac.in/admissions/",fee:0},
-  {inst:"IIT BHU",course:"MTech TA AI",subject:"AI",type:"MTech TA",chance:"Maybe",deadline:"2026-04-13",filled:false,link:"https://iitbhu.ac.in/admissions",fee:500},
-  {inst:"IIT BHU",course:"MTech TA IOT",subject:"IOT",type:"MTech TA",chance:"Maybe",deadline:"2026-04-13",filled:false,link:"https://iitbhu.ac.in/admissions",fee:500},
-  {inst:"IIT Ropar",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"Must",deadline:"2026-04-15",filled:false,link:"#",fee:500},
-  {inst:"IIT Ropar",course:"MTech TA AI",subject:"AI",type:"MTech TA",chance:"Must",deadline:"2026-04-15",filled:false,link:"#",fee:500},
-  {inst:"ISM Dhanbad",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"Must",deadline:"2026-04-19",filled:false,link:"https://admission.iitism.ac.in/index.php/admission/mtech",fee:600},
-  {inst:"ISM Dhanbad",course:"MTech TA DS",subject:"Data Science",type:"MTech TA",chance:"Must",deadline:"2026-04-19",filled:false,link:"https://admission.iitism.ac.in/index.php/admission/mtech",fee:600},
-  {inst:"IIT Jodhpur",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"Must",deadline:"2026-04-15",filled:false,link:"#",fee:900},
-  {inst:"IIT Jodhpur",course:"MTech TA AI",subject:"AI",type:"MTech TA",chance:"",deadline:"2026-04-15",filled:false,link:"#",fee:0},
-  {inst:"IIT Jodhpur",course:"MTech TA DCS",subject:"DCS",type:"MTech TA",chance:"Must",deadline:"2026-04-15",filled:false,link:"#",fee:900},
-  {inst:"IIT Jammu",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"Must",deadline:"2026-04-14",filled:false,link:"#",fee:300},
-  {inst:"IIT Jammu",course:"MTech RA CSE",subject:"CSE",type:"MTech RA",chance:"Must",deadline:"2026-04-14",filled:true,link:"#",fee:0},
-  {inst:"IIIT Hyderabad",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"Maybe",deadline:"2026-03-31",filled:false,link:"#",fee:2500},
-  {inst:"IIT Indore",course:"MTech RA CSE",subject:"CSE",type:"MTech RA",chance:"",deadline:"2026-04-24",filled:false,link:"https://academic.iiti.ac.in:8443/nregistrationmtech.jsp",fee:800},
-  {inst:"IIT Gandhinagar",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"",deadline:"2026-04-15",filled:false,link:"#",fee:300},
-  {inst:"IIT Gandhinagar",course:"MTech TA AI",subject:"AI",type:"MTech TA",chance:"",deadline:"2026-04-15",filled:false,link:"#",fee:300},
-  {inst:"IIT Patna",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"",deadline:"2026-04-20",filled:false,link:"#",fee:500},
-  {inst:"IIT Patna",course:"MTech TA AI",subject:"AI",type:"MTech TA",chance:"",deadline:"2026-04-20",filled:false,link:"#",fee:500},
-  {inst:"IIT Mandi",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"",deadline:"2026-04-17",filled:false,link:"#",fee:100},
-  {inst:"IIT Bhubaneswar",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"",deadline:"2026-04-20",filled:false,link:"#",fee:0},
-  {inst:"IIT Bhubaneswar",course:"MTech TA AI",subject:"AI",type:"MTech TA",chance:"",deadline:"2026-04-20",filled:false,link:"#",fee:0},
-  {inst:"IIT Goa",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"",deadline:"2026-04-23",filled:false,link:"https://iitgoa.ac.in/mtech-admissions/",fee:0},
-  {inst:"IIIT Bangalore",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"",deadline:"2026-05-04",filled:false,link:"https://erp.iiitb.net/applicant-portal/",fee:1000},
-  {inst:"IIT Tirupati",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"",deadline:"2026-04-20",filled:false,link:"#",fee:0},
-  {inst:"IIT Dharwad",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"",deadline:"2026-04-26",filled:false,link:"#",fee:0},
-  {inst:"IIT Palakkad",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"",deadline:"2026-04-25",filled:false,link:"#",fee:0},
-  {inst:"IIT Bhilai",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"",deadline:"2026-04-20",filled:false,link:"#",fee:0},
-  {inst:"ISI Kolkata",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"",deadline:"2026-03-26",filled:false,link:"#",fee:750}
+  // IISc — deadline was April 6, now closed
+  {inst:"IISc",course:"MTech TA AI",subject:"AI",type:"MTech TA",chance:"Maybe",deadline:"2026-04-06",appStatus:"Not Applied",link:"https://admissions.iisc.ac.in/",fee:800,interview_date:null,test_date:null},
+  {inst:"IISc",course:"MTech TA CDS",subject:"CDS",type:"MTech TA",chance:"Maybe",deadline:"2026-04-06",appStatus:"Not Applied",link:"https://admissions.iisc.ac.in/",fee:800,interview_date:null,test_date:null},
+  {inst:"IISc",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"Maybe",deadline:"2026-04-06",appStatus:"Not Applied",link:"https://admissions.iisc.ac.in/",fee:800,interview_date:null,test_date:null},
+  {inst:"IISc",course:"MTech RA CSE",subject:"CSE",type:"MTech RA",chance:"Maybe",deadline:"2026-04-06",appStatus:"Not Applied",link:"https://admissions.iisc.ac.in/",fee:800,interview_date:null,test_date:null},
+  {inst:"IISc",course:"MTech RA CDS",subject:"CDS",type:"MTech RA",chance:"Maybe",deadline:"2026-04-06",appStatus:"Not Applied",link:"https://admissions.iisc.ac.in/",fee:800,interview_date:null,test_date:null},
+  // IIT Bombay — TA CSE deadline April 6 (closed); RA/MS-R April 10
+  {inst:"IIT Bombay",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"No",deadline:"2026-04-06",appStatus:"Not Applied",link:"https://www.iitb.ac.in/newacadhome/msResearch.jsp",fee:150,interview_date:null,test_date:null},
+  {inst:"IIT Bombay",course:"MTech RA CSE",subject:"CSE",type:"MTech RA",chance:"Maybe",deadline:"2026-04-10",appStatus:"Not Applied",link:"https://www.iitb.ac.in/newacadhome/msResearch.jsp",fee:0,interview_date:null,test_date:null},
+  {inst:"IIT Bombay",course:"MS-R CSE",subject:"CSE",type:"MS-R",chance:"Maybe",deadline:"2026-04-10",appStatus:"Not Applied",link:"https://www.iitb.ac.in/newacadhome/msResearch.jsp",fee:0,interview_date:null,test_date:null},
+  {inst:"IIT Bombay",course:"MS-R CMInDS",subject:"CMInDS",type:"MS-R",chance:"Maybe",deadline:"2026-04-10",appStatus:"Not Applied",link:"https://www.iitb.ac.in/newacadhome/msResearch.jsp",fee:0,interview_date:null,test_date:null},
+  // IIT Madras — MS-R deadline April 1 (closed); MTech TA April 27
+  {inst:"IIT Madras",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"No",deadline:"2026-04-27",appStatus:"Not Applied",link:"https://mtechadm.iitm.ac.in/",fee:300,interview_date:null,test_date:null},
+  {inst:"IIT Madras",course:"MTech TA DSAI",subject:"DSAI",type:"MTech TA",chance:"No",deadline:"2026-04-27",appStatus:"Not Applied",link:"https://mtechadm.iitm.ac.in/",fee:300,interview_date:null,test_date:null},
+  {inst:"IIT Madras",course:"MS-R CSE",subject:"CSE",type:"MS-R",chance:"Maybe",deadline:"2026-04-01",appStatus:"Not Applied",link:"https://mtechadm.iitm.ac.in/",fee:300,interview_date:null,test_date:null},
+  {inst:"IIT Madras",course:"MS-R DSAI",subject:"DSAI",type:"MS-R",chance:"Maybe",deadline:"2026-04-01",appStatus:"Not Applied",link:"https://mtechadm.iitm.ac.in/",fee:300,interview_date:null,test_date:null},
+  // IIT Delhi
+  {inst:"IIT Delhi",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"No",deadline:"2026-04-11",appStatus:"Not Applied",link:"https://home.iitd.ac.in/admissions.php",fee:300,interview_date:null,test_date:null},
+  {inst:"IIT Delhi",course:"MTech TA CTech",subject:"CTech",type:"MTech TA",chance:"Maybe",deadline:"2026-04-11",appStatus:"Not Applied",link:"https://home.iitd.ac.in/admissions.php",fee:300,interview_date:null,test_date:null},
+  {inst:"IIT Delhi",course:"MTech TA Robotics",subject:"Robotics",type:"MTech TA",chance:"Maybe",deadline:"2026-04-11",appStatus:"Not Applied",link:"https://home.iitd.ac.in/admissions.php",fee:300,interview_date:null,test_date:null},
+  {inst:"IIT Delhi",course:"MTech TA Cyber Security",subject:"Cyber Security",type:"MTech TA",chance:"Maybe",deadline:"2026-04-11",appStatus:"Not Applied",link:"https://home.iitd.ac.in/admissions.php",fee:300,interview_date:null,test_date:null},
+  {inst:"IIT Delhi",course:"MTech TA MINDS",subject:"MINDS",type:"MTech TA",chance:"Maybe",deadline:"2026-04-11",appStatus:"Not Applied",link:"https://home.iitd.ac.in/admissions.php",fee:300,interview_date:null,test_date:null},
+  {inst:"IIT Delhi",course:"MS-R CSE",subject:"CSE",type:"MS-R",chance:"Maybe",deadline:"2026-04-11",appStatus:"Not Applied",link:"https://home.iitd.ac.in/admissions.php",fee:300,interview_date:null,test_date:null},
+  {inst:"IIT Delhi",course:"MS-R MINDS",subject:"MINDS",type:"MS-R",chance:"Maybe",deadline:"2026-04-11",appStatus:"Not Applied",link:"https://home.iitd.ac.in/admissions.php",fee:200,interview_date:null,test_date:null},
+  {inst:"IIT Delhi",course:"MTech HVA CSE",subject:"CSE",type:"MTech HVA",chance:"Maybe",deadline:"2026-04-11",appStatus:"Not Applied",link:"https://home.iitd.ac.in/admissions.php",fee:200,interview_date:null,test_date:null},
+  {inst:"IIT Delhi",course:"MTech HVA MINDS",subject:"MINDS",type:"MTech HVA",chance:"Maybe",deadline:"2026-04-11",appStatus:"Not Applied",link:"https://home.iitd.ac.in/admissions.php",fee:200,interview_date:null,test_date:null},
+  // IIT Kanpur
+  {inst:"IIT Kanpur",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"No",deadline:"2026-04-13",appStatus:"Not Applied",link:"https://www.iitk.ac.in/doaa/admission/",fee:500,interview_date:null,test_date:null},
+  {inst:"IIT Kanpur",course:"MTech TA Cognitive Systems",subject:"Cognitive Systems",type:"MTech TA",chance:"Maybe",deadline:"2026-04-13",appStatus:"Not Applied",link:"https://www.iitk.ac.in/doaa/admission/",fee:500,interview_date:null,test_date:null},
+  {inst:"IIT Kanpur",course:"MS-R CSE",subject:"CSE",type:"MS-R",chance:"Maybe",deadline:"2026-04-13",appStatus:"Not Applied",link:"https://www.iitk.ac.in/doaa/admission/",fee:500,interview_date:null,test_date:null},
+  {inst:"IIT Kanpur",course:"MS-R Cyber Security",subject:"Cyber Security",type:"MS-R",chance:"Maybe",deadline:"2026-04-13",appStatus:"Not Applied",link:"https://www.iitk.ac.in/doaa/admission/",fee:500,interview_date:null,test_date:null},
+  // IIT Hyderabad
+  {inst:"IIT Hyderabad",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"Maybe",deadline:"2026-04-17",appStatus:"Not Applied",link:"https://erp.iith.ac.in/Admissions/#/register",fee:250,interview_date:null,test_date:null},
+  {inst:"IIT Hyderabad",course:"MTech TA AI",subject:"AI",type:"MTech TA",chance:"Maybe",deadline:"2026-04-17",appStatus:"Not Applied",link:"https://erp.iith.ac.in/Admissions/#/register",fee:250,interview_date:null,test_date:null},
+  {inst:"IIT Hyderabad",course:"MTech RA CSE",subject:"CSE",type:"MTech RA",chance:"Maybe",deadline:"2026-04-17",appStatus:"Not Applied",link:"https://erp.iith.ac.in/Admissions/#/register",fee:250,interview_date:null,test_date:null},
+  {inst:"IIT Hyderabad",course:"MTech RA AI",subject:"AI",type:"MTech RA",chance:"Maybe",deadline:"2026-04-17",appStatus:"Not Applied",link:"https://erp.iith.ac.in/Admissions/#/register",fee:250,interview_date:null,test_date:null},
+  {inst:"IIT Hyderabad",course:"Self Sponsor CSE",subject:"CSE",type:"Self Sponsor",chance:"Must",deadline:"2026-04-17",appStatus:"Not Applied",link:"https://erp.iith.ac.in/Admissions/#/register",fee:500,interview_date:null,test_date:null},
+  {inst:"IIT Hyderabad",course:"Self Sponsor AI",subject:"AI",type:"Self Sponsor",chance:"Must",deadline:"2026-04-17",appStatus:"Not Applied",link:"https://erp.iith.ac.in/Admissions/#/register",fee:500,interview_date:null,test_date:null},
+  {inst:"IIT Hyderabad",course:"MTech TA Smart Mobility",subject:"Smart Mobility",type:"MTech TA",chance:"TBD",deadline:"2026-04-17",appStatus:"Not Applied",link:"https://erp.iith.ac.in/Admissions/#/register",fee:250,interview_date:null,test_date:null},
+  // IIT Kharagpur — fee updated to 500 (standard IIT KGP GATE form fee)
+  {inst:"IIT Kharagpur",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"Maybe",deadline:"2026-04-18",appStatus:"Not Applied",link:"https://gateoffice.iitkgp.ac.in/jmp/",fee:500,interview_date:null,test_date:null},
+  {inst:"IIT Kharagpur",course:"MTech TA OR & Data Analytics",subject:"Data Analytics",type:"MTech TA",chance:"Maybe",deadline:"2026-04-18",appStatus:"Not Applied",link:"https://gateoffice.iitkgp.ac.in/jmp/",fee:500,interview_date:null,test_date:null},
+  {inst:"IIT Kharagpur",course:"MTech TA Safety Engineering",subject:"Safety Engineering",type:"MTech TA",chance:"Maybe",deadline:"2026-04-18",appStatus:"Not Applied",link:"https://gateoffice.iitkgp.ac.in/jmp/",fee:500,interview_date:null,test_date:null},
+  {inst:"IIT Kharagpur",course:"MTech TA AI",subject:"AI",type:"MTech TA",chance:"Maybe",deadline:"2026-04-18",appStatus:"Not Applied",link:"https://gateoffice.iitkgp.ac.in/jmp/",fee:500,interview_date:null,test_date:null},
+  {inst:"IIT Kharagpur",course:"MTech TA Embedded Controls",subject:"Embedded Systems",type:"MTech TA",chance:"TBD",deadline:"2026-04-18",appStatus:"Not Applied",link:"https://gateoffice.iitkgp.ac.in/jmp/",fee:500,interview_date:null,test_date:null},
+  // IIT Guwahati
+  {inst:"IIT Guwahati",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"Maybe",deadline:"2026-04-10",appStatus:"Not Applied",link:"https://www.iitg.ac.in/acad/admission/",fee:300,interview_date:null,test_date:null},
+  {inst:"IIT Guwahati",course:"MTech TA DS",subject:"Data Science",type:"MTech TA",chance:"Maybe",deadline:"2026-04-10",appStatus:"Not Applied",link:"https://www.iitg.ac.in/acad/admission/",fee:300,interview_date:null,test_date:null},
+  {inst:"IIT Guwahati",course:"MTech TA Robotics & AI",subject:"Robotics",type:"MTech TA",chance:"Maybe",deadline:"2026-04-10",appStatus:"Not Applied",link:"https://www.iitg.ac.in/acad/admission/",fee:300,interview_date:null,test_date:null},
+  // IIT Roorkee
+  {inst:"IIT Roorkee",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"TBD",deadline:"2026-04-20",appStatus:"Not Applied",link:"https://iitr.ac.in/admissions/",fee:500,interview_date:null,test_date:null},
+  {inst:"IIT Roorkee",course:"MTech TA AI",subject:"AI",type:"MTech TA",chance:"TBD",deadline:"2026-04-20",appStatus:"Not Applied",link:"https://iitr.ac.in/admissions/",fee:500,interview_date:null,test_date:null},
+  {inst:"IIT Roorkee",course:"MTech TA DS",subject:"Data Science",type:"MTech TA",chance:"TBD",deadline:"2026-04-20",appStatus:"Not Applied",link:"https://iitr.ac.in/admissions/",fee:500,interview_date:null,test_date:null},
+  {inst:"IIT Roorkee",course:"MTech TA Math Computing",subject:"Math Computing",type:"MTech TA",chance:"TBD",deadline:"2026-04-20",appStatus:"Not Applied",link:"https://iitr.ac.in/admissions/",fee:500,interview_date:null,test_date:null},
+  // IIT BHU
+  {inst:"IIT BHU",course:"MTech TA AI",subject:"AI",type:"MTech TA",chance:"Maybe",deadline:"2026-04-13",appStatus:"Not Applied",link:"https://iitbhu.ac.in/admissions",fee:500,interview_date:null,test_date:null},
+  {inst:"IIT BHU",course:"MTech TA IOT",subject:"IOT",type:"MTech TA",chance:"Maybe",deadline:"2026-04-13",appStatus:"Not Applied",link:"https://iitbhu.ac.in/admissions",fee:500,interview_date:null,test_date:null},
+  // IIT Ropar
+  {inst:"IIT Ropar",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"Must",deadline:"2026-04-15",appStatus:"Not Applied",link:"https://www.iitrpr.ac.in/mtech-admissions",fee:500,interview_date:null,test_date:null},
+  {inst:"IIT Ropar",course:"MTech TA AI",subject:"AI",type:"MTech TA",chance:"Must",deadline:"2026-04-15",appStatus:"Not Applied",link:"https://www.iitrpr.ac.in/mtech-admissions",fee:500,interview_date:null,test_date:null},
+  // ISM Dhanbad
+  {inst:"ISM Dhanbad",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"Must",deadline:"2026-04-19",appStatus:"Not Applied",link:"https://admission.iitism.ac.in/index.php/admission/mtech",fee:600,interview_date:null,test_date:null},
+  {inst:"ISM Dhanbad",course:"MTech TA DS",subject:"Data Science",type:"MTech TA",chance:"Must",deadline:"2026-04-19",appStatus:"Not Applied",link:"https://admission.iitism.ac.in/index.php/admission/mtech",fee:600,interview_date:null,test_date:null},
+  // IIT Jodhpur
+  {inst:"IIT Jodhpur",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"Must",deadline:"2026-04-15",appStatus:"Not Applied",link:"https://admissions.iitj.ac.in/",fee:900,interview_date:null,test_date:null},
+  {inst:"IIT Jodhpur",course:"MTech TA AI",subject:"AI",type:"MTech TA",chance:"TBD",deadline:"2026-04-15",appStatus:"Not Applied",link:"https://admissions.iitj.ac.in/",fee:900,interview_date:null,test_date:null},
+  {inst:"IIT Jodhpur",course:"MTech TA DCS",subject:"DCS",type:"MTech TA",chance:"Must",deadline:"2026-04-15",appStatus:"Not Applied",link:"https://admissions.iitj.ac.in/",fee:900,interview_date:null,test_date:null},
+  // IIT Jammu
+  {inst:"IIT Jammu",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"Must",deadline:"2026-04-14",appStatus:"Not Applied",link:"https://www.iitjammu.ac.in/admissions/mtech",fee:300,interview_date:null,test_date:null},
+  {inst:"IIT Jammu",course:"MTech RA CSE",subject:"CSE",type:"MTech RA",chance:"Must",deadline:"2026-04-14",appStatus:"Applied",link:"https://www.iitjammu.ac.in/admissions/mtech",fee:0,interview_date:null,test_date:null},
+  // IIIT Hyderabad — CLOSED (deadline was March 31)
+  {inst:"IIIT Hyderabad",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"Maybe",deadline:"2026-03-31",appStatus:"Not Applied",link:"https://admissions.iiit.ac.in/",fee:2500,interview_date:null,test_date:null},
+  // IIT Indore
+  {inst:"IIT Indore",course:"MTech RA CSE",subject:"CSE",type:"MTech RA",chance:"TBD",deadline:"2026-04-24",appStatus:"Not Applied",link:"https://academic.iiti.ac.in:8443/nregistrationmtech.jsp",fee:800,interview_date:null,test_date:null},
+  // IIT Gandhinagar
+  {inst:"IIT Gandhinagar",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"TBD",deadline:"2026-04-15",appStatus:"Not Applied",link:"https://admissions.iitgn.ac.in/",fee:300,interview_date:null,test_date:null},
+  {inst:"IIT Gandhinagar",course:"MTech TA AI",subject:"AI",type:"MTech TA",chance:"TBD",deadline:"2026-04-15",appStatus:"Not Applied",link:"https://admissions.iitgn.ac.in/",fee:300,interview_date:null,test_date:null},
+  // IIT Patna
+  {inst:"IIT Patna",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"TBD",deadline:"2026-04-20",appStatus:"Not Applied",link:"https://www.iitp.ac.in/index.php/admissions/mtech",fee:500,interview_date:null,test_date:null},
+  {inst:"IIT Patna",course:"MTech TA AI",subject:"AI",type:"MTech TA",chance:"TBD",deadline:"2026-04-20",appStatus:"Not Applied",link:"https://www.iitp.ac.in/index.php/admissions/mtech",fee:500,interview_date:null,test_date:null},
+  // IIT Mandi
+  {inst:"IIT Mandi",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"TBD",deadline:"2026-04-17",appStatus:"Not Applied",link:"https://admissions.iitmandi.ac.in/",fee:100,interview_date:null,test_date:null},
+  // IIT Bhubaneswar
+  {inst:"IIT Bhubaneswar",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"TBD",deadline:"2026-04-20",appStatus:"Not Applied",link:"https://www.iitbbs.ac.in/admission.php",fee:300,interview_date:null,test_date:null},
+  {inst:"IIT Bhubaneswar",course:"MTech TA AI",subject:"AI",type:"MTech TA",chance:"TBD",deadline:"2026-04-20",appStatus:"Not Applied",link:"https://www.iitbbs.ac.in/admission.php",fee:300,interview_date:null,test_date:null},
+  // IIT Goa
+  {inst:"IIT Goa",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"TBD",deadline:"2026-04-23",appStatus:"Not Applied",link:"https://iitgoa.ac.in/mtech-admissions/",fee:300,interview_date:null,test_date:null},
+  // IIIT Bangalore
+  {inst:"IIIT Bangalore",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"TBD",deadline:"2026-05-04",appStatus:"Not Applied",link:"https://erp.iiitb.net/applicant-portal/",fee:1000,interview_date:null,test_date:null},
+  // IIT Tirupati
+  {inst:"IIT Tirupati",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"TBD",deadline:"2026-04-20",appStatus:"Not Applied",link:"https://www.iittp.ac.in/admissions/mtech",fee:300,interview_date:null,test_date:null},
+  // IIT Dharwad
+  {inst:"IIT Dharwad",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"TBD",deadline:"2026-04-26",appStatus:"Not Applied",link:"https://www.iitdh.ac.in/admissions",fee:300,interview_date:null,test_date:null},
+  // IIT Palakkad
+  {inst:"IIT Palakkad",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"TBD",deadline:"2026-04-25",appStatus:"Not Applied",link:"https://www.iitpkd.ac.in/admissions",fee:300,interview_date:null,test_date:null},
+  // IIT Bhilai
+  {inst:"IIT Bhilai",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"TBD",deadline:"2026-04-20",appStatus:"Not Applied",link:"https://www.iitbhilai.ac.in/admissions",fee:300,interview_date:null,test_date:null},
+  // ISI Kolkata — deadline March 26 (closed)
+  {inst:"ISI Kolkata",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"TBD",deadline:"2026-03-26",appStatus:"Not Applied",link:"https://www.isical.ac.in/admissions",fee:750,interview_date:null,test_date:null}
 ];
 
-// State
-let notes = JSON.parse(localStorage.getItem('mtech_notes') || '{}');
-let filledState = JSON.parse(localStorage.getItem('mtech_filled') || '{}');
+// ─── STATE ────────────────────────────────────────────────────────────────────
+let notes = {};
+let appStatusState = {};   // overrides per index
+let testDateState = {};
+let interviewDateState = {};
+
+function loadState() {
+  try { notes = JSON.parse(localStorage.getItem('mtech_notes') || '{}'); } catch(e) {}
+  try { appStatusState = JSON.parse(localStorage.getItem('mtech_app_status') || '{}'); } catch(e) {}
+  try { testDateState = JSON.parse(localStorage.getItem('mtech_test_date') || '{}'); } catch(e) {}
+  try { interviewDateState = JSON.parse(localStorage.getItem('mtech_interview_date') || '{}'); } catch(e) {}
+  DATA.forEach((r, i) => {
+    if (appStatusState[i] !== undefined) r.appStatus = appStatusState[i];
+    if (testDateState[i] !== undefined) r.test_date = testDateState[i];
+    if (interviewDateState[i] !== undefined) r.interview_date = interviewDateState[i];
+  });
+}
+
+loadState();
+
 let currentView = 'grid';
 let currentSort = 'deadline';
 let currentSortDir = 1;
 let activeTab = 'all';
-
-// Populate filled from DATA and override with saved state
-DATA.forEach((r,i) => {
-  if (filledState[i] !== undefined) r.filled = filledState[i];
-});
 
 const today = new Date(); today.setHours(0,0,0,0);
 
@@ -773,9 +638,12 @@ function daysLeft(dl) {
   return Math.ceil((d - today) / 86400000);
 }
 
-function chanceOrder(c) { return {Must:0,Maybe:1,No:2}[c] ?? 3; }
+function isDeadlinePast(r) { return daysLeft(r.deadline) < 0; }
+function isOpen(r) { return !isDeadlinePast(r) && r.appStatus === 'Not Applied'; }
 
-// Build subject filter options
+function chanceOrder(c) { return {Must:0,Maybe:1,No:2,TBD:3}[c] ?? 4; }
+
+// Build subject filter
 const subjects = [...new Set(DATA.map(r => r.subject).filter(Boolean))].sort();
 const subSel = document.getElementById('filt-subject');
 subjects.forEach(s => {
@@ -783,7 +651,6 @@ subjects.forEach(s => {
   subSel.appendChild(o);
 });
 
-// Build institute tabs
 const institutes = ['all', ...new Set(DATA.map(r => r.inst))];
 
 function buildTabs(items) {
@@ -805,23 +672,28 @@ function getFiltered() {
   const fc = document.getElementById('filt-chance').value;
   const ft = document.getElementById('filt-type').value;
   const fsub = document.getElementById('filt-subject').value;
-  const hf = document.getElementById('hide-filled').checked;
   const hc = document.getElementById('hide-closed').checked;
+  const ha = document.getElementById('hide-applied').checked;
 
-  return DATA.filter((r, i) => {
+  return DATA.filter((r) => {
     const dl = daysLeft(r.deadline);
-    const isGone = dl < 0;
+    const past = dl < 0;
 
     if (activeTab !== 'all' && r.inst !== activeTab) return false;
     if (q && !r.inst.toLowerCase().includes(q) && !r.course.toLowerCase().includes(q) && !r.subject.toLowerCase().includes(q)) return false;
-    if (fs === 'open' && (isGone || r.filled)) return false;
-    if (fs === 'filled' && !r.filled) return false;
-    if (fs === 'closed' && !isGone) return false;
+
+    // status filter
+    if (fs === 'open' && (past || r.appStatus !== 'Not Applied')) return false;
+    if (fs === 'applied' && r.appStatus !== 'Applied') return false;
+    if (fs === 'test' && r.appStatus !== 'Test/Interview') return false;
+    if (fs === 'result' && r.appStatus !== 'Result') return false;
+    if (fs === 'closed' && !past) return false;
+
     if (fc !== 'all' && r.chance !== fc) return false;
     if (ft !== 'all' && !r.type.startsWith(ft)) return false;
     if (fsub !== 'all' && r.subject !== fsub) return false;
-    if (hf && r.filled) return false;
-    if (hc && isGone && !r.filled) return false;
+    if (hc && past && r.appStatus === 'Not Applied') return false;
+    if (ha && (r.appStatus === 'Applied' || r.appStatus === 'Test/Interview' || r.appStatus === 'Result')) return false;
     return true;
   });
 }
@@ -830,123 +702,169 @@ function sortItems(items) {
   const s = currentSort;
   return [...items].sort((a, b) => {
     let va, vb;
-    if (s === 'deadline' || s === 'days') {
-      va = new Date(a.deadline); vb = new Date(b.deadline);
-    } else if (s === 'inst') {
-      va = a.inst; vb = b.inst;
-      return currentSortDir * va.localeCompare(vb);
-    } else if (s === 'course') {
-      va = a.course; vb = b.course;
-      return currentSortDir * va.localeCompare(vb);
-    } else if (s === 'chance') {
-      va = chanceOrder(a.chance); vb = chanceOrder(b.chance);
-    } else if (s === 'fee') {
-      va = a.fee; vb = b.fee;
-    } else {
-      va = new Date(a.deadline); vb = new Date(b.deadline);
-    }
+    if (s === 'deadline' || s === 'days') { va = new Date(a.deadline); vb = new Date(b.deadline); }
+    else if (s === 'inst') { return currentSortDir * a.inst.localeCompare(b.inst); }
+    else if (s === 'course') { return currentSortDir * a.course.localeCompare(b.course); }
+    else if (s === 'chance') { va = chanceOrder(a.chance); vb = chanceOrder(b.chance); }
+    else if (s === 'fee') { va = a.fee; vb = b.fee; }
+    else { va = new Date(a.deadline); vb = new Date(b.deadline); }
     return currentSortDir * (va < vb ? -1 : va > vb ? 1 : 0);
   });
 }
 
 function updateStats() {
-  const open = DATA.filter(r => !r.filled && daysLeft(r.deadline) >= 0).length;
-  const filled = DATA.filter(r => r.filled).length;
-  const closed = DATA.filter(r => !r.filled && daysLeft(r.deadline) < 0).length;
-  const must = DATA.filter(r => r.chance === 'Must' && !r.filled && daysLeft(r.deadline) >= 0).length;
-  const totalFee = DATA.filter(r => !r.filled && daysLeft(r.deadline) >= 0)
-    .reduce((s, r) => s + (r.fee || 0), 0);
+  const open = DATA.filter(r => !isDeadlinePast(r) && r.appStatus === 'Not Applied').length;
+  const applied = DATA.filter(r => r.appStatus === 'Applied' || r.appStatus === 'Test/Interview' || r.appStatus === 'Result').length;
+  const must = DATA.filter(r => r.chance === 'Must' && !isDeadlinePast(r) && r.appStatus === 'Not Applied').length;
+  const totalFee = DATA.filter(r => !isDeadlinePast(r) && r.appStatus === 'Not Applied').reduce((s, r) => s + (r.fee || 0), 0);
 
   document.getElementById('stats-bar').innerHTML = `
     <div class="stat s-total"><div class="stat-n">${DATA.length}</div><div class="stat-l">Total Courses</div></div>
     <div class="stat s-open"><div class="stat-n">${open}</div><div class="stat-l">Open</div></div>
-    <div class="stat s-filled"><div class="stat-n">${filled}</div><div class="stat-l">Filled</div></div>
-    <div class="stat s-closed"><div class="stat-n">${closed}</div><div class="stat-l">Closed</div></div>
+    <div class="stat s-applied"><div class="stat-n">${applied}</div><div class="stat-l">Applied</div></div>
     <div class="stat s-must"><div class="stat-n">${must}</div><div class="stat-l">Must Apply</div></div>
-    <div class="stat s-fee" data-tip="Total fees for all open applications"><div class="stat-n">₹${totalFee.toLocaleString()}</div><div class="stat-l">Pending Fees</div></div>
+    <div class="stat s-fee" data-tip="Total fees for open, unapplied forms"><div class="stat-n">₹${totalFee.toLocaleString()}</div><div class="stat-l">Pending Fees</div></div>
   `;
 
   const total = DATA.length;
-  document.getElementById('pb-filled').style.width = (filled / total * 100) + '%';
-  document.getElementById('pb-label-filled').textContent = `${filled} / ${total}`;
+  document.getElementById('pb-filled').style.width = (applied / total * 100) + '%';
+  document.getElementById('pb-label-filled').textContent = `${applied} / ${total}`;
   document.getElementById('pb-open').style.width = (open / total * 100) + '%';
   document.getElementById('pb-label-open').textContent = `${open} remaining`;
 
-  // Alert banner for urgent deadlines
-  const urgent = DATA.filter(r => !r.filled && daysLeft(r.deadline) >= 0 && daysLeft(r.deadline) <= 2);
+  // Urgent strip — ONLY future deadlines within 3 days
+  const urgentStrip = document.getElementById('urgent-strip');
+  const urgent3 = DATA.filter(r => {
+    const dl = daysLeft(r.deadline);
+    return dl >= 0 && dl <= 3 && r.appStatus === 'Not Applied';
+  });
+  if (urgent3.length > 0) {
+    urgentStrip.innerHTML = `
+      <div class="urgent-strip">
+        <div class="urgent-strip-title">High Priority — Deadlines in ≤3 days</div>
+        <div class="urgent-chips">
+          ${urgent3.map(r => {
+            const dl = daysLeft(r.deadline);
+            const hasLink = r.link && r.link !== '#' && !r.link.startsWith('Pending');
+            return `<a class="urgent-chip" href="${hasLink ? r.link : '#'}" ${hasLink ? 'target="_blank"' : ''}>
+              <span class="uc-inst">${r.inst}</span>
+              <span class="uc-course">${r.course}</span>
+              <span class="uc-days">${dl === 0 ? 'TODAY!' : dl + 'd left'}</span>
+            </a>`;
+          }).join('')}
+        </div>
+      </div>`;
+  } else {
+    urgentStrip.innerHTML = '';
+  }
+
+  // Alert banner — only future deadlines ≤2 days
+  const urgentAlert = DATA.filter(r => {
+    const dl = daysLeft(r.deadline);
+    return dl >= 0 && dl <= 2 && r.appStatus === 'Not Applied';
+  });
   const banner = document.getElementById('alert-banner');
-  if (urgent.length > 0) {
+  if (urgentAlert.length > 0) {
     banner.style.display = 'flex';
     document.getElementById('alert-text').textContent =
-      `${urgent.length} deadline${urgent.length > 1 ? 's' : ''} in ≤2 days: ${urgent.map(r => r.inst + ' ' + r.course).join(' · ')}`;
+      `${urgentAlert.length} deadline${urgentAlert.length > 1 ? 's' : ''} in ≤2 days: ${urgentAlert.map(r => r.inst + ' – ' + r.course).join(' · ')}`;
   } else {
     banner.style.display = 'none';
   }
 }
 
+function statusBadgeHtml(r) {
+  const past = isDeadlinePast(r);
+  if (past && r.appStatus === 'Not Applied') return `<span class="status-badge b-closed">CLOSED</span>`;
+  const map = {
+    'Not Applied': ['b-na','NOT APPLIED'],
+    'Applied':     ['b-applied','APPLIED'],
+    'Test/Interview': ['b-test','TEST / INT'],
+    'Result':      ['b-result','RESULT'],
+  };
+  const [cls, lbl] = map[r.appStatus] || ['b-na','NOT APPLIED'];
+  return `<span class="status-badge ${cls}">${lbl}</span>`;
+}
+
+function chancePillHtml(r) {
+  if (!r.chance) return '';
+  const cls = {Must:'p-must',Maybe:'p-maybe',No:'p-no',TBD:'p-tbd'}[r.chance] || 'p-no';
+  return `<span class="pill ${cls}">${r.chance}</span>`;
+}
+
 function makeCard(r, i) {
   const dl = daysLeft(r.deadline);
-  const isGone = dl < 0;
+  const past = dl < 0;
   const isUrgent = dl >= 0 && dl <= 2;
   const isMust = r.chance === 'Must';
-  const hasLink = r.link && r.link !== '#';
-  const canApply = !r.filled && !isGone;
+  const hasLink = r.link && r.link !== '#' && !r.link.startsWith('Pending');
+  const canApply = !past && r.appStatus === 'Not Applied';
 
-  let statusCls, statusTxt;
-  if (r.filled) { statusCls = 'b-filled'; statusTxt = 'FILLED'; }
-  else if (isGone) { statusCls = 'b-closed'; statusTxt = 'CLOSED'; }
-  else { statusCls = 'b-open'; statusTxt = 'OPEN'; }
-
-  const daysStr = isGone ? 'Expired' : dl === 0 ? 'TODAY!' : `${dl}d left`;
-  const daysCls = isGone ? 'dim' : dl <= 2 ? 'danger' : dl <= 5 ? 'warn' : 'ok';
-
+  const daysStr = past ? 'Expired' : dl === 0 ? 'TODAY!' : `${dl}d left`;
+  const daysCls = past ? 'dim' : dl <= 2 ? 'danger' : dl <= 5 ? 'warn' : 'ok';
   const feeStr = r.fee > 0 ? `₹${r.fee.toLocaleString()}` : 'Free';
 
-  const chancePills = r.chance
-    ? `<span class="pill p-${r.chance === 'Must' ? 'must' : r.chance === 'Maybe' ? 'maybe' : 'no'}">${r.chance}</span>`
-    : '';
-
-  // Deadline urgency bar (shows how close deadline is within a 60-day window)
-  const totalDays = 60;
-  const pct = isGone ? 0 : Math.max(0, Math.min(100, (dl / totalDays) * 100));
-  const barColor = isGone ? 'var(--dim)' : dl <= 2 ? 'var(--red)' : dl <= 7 ? 'var(--amber)' : 'var(--green)';
-
+  const pct = past ? 0 : Math.max(0, Math.min(100, (dl / 60) * 100));
+  const barColor = past ? 'var(--dim)' : dl <= 2 ? 'var(--red)' : dl <= 7 ? 'var(--amber)' : 'var(--green)';
+  const accentColor = past && r.appStatus === 'Not Applied' ? 'var(--dim)' : isMust ? 'var(--red)' : 'var(--accent2)';
   const noteVal = notes[i] || '';
 
-  const accentColor = r.filled ? 'var(--amber)' : isGone ? 'var(--dim)' : isMust ? 'var(--red)' : 'var(--accent2)';
+  const testD = r.test_date || '';
+  const intD = r.interview_date || '';
+
+  // Status selector buttons
+  const statuses = ['Not Applied','Applied','Test/Interview','Result'];
+  const ssMap = {'Not Applied':'na','Applied':'applied','Test/Interview':'test','Result':'result'};
+  const ssBtns = statuses.map(st => {
+    const key = ssMap[st];
+    const active = r.appStatus === st ? `sel-${key}` : '';
+    return `<button class="ss-btn ${active}" onclick="setAppStatus(${i},'${st}')">${st}</button>`;
+  }).join('');
 
   const card = document.createElement('div');
-  card.className = `card${r.filled?' filled':''}${isUrgent?' urgent':''}${isMust&&!r.filled&&!isGone?' must-apply':''}`;
+  card.className = `card${isUrgent&&!past?' urgent':''}${past&&r.appStatus==='Not Applied'?' closed-card':''}${isMust&&!past&&r.appStatus==='Not Applied'?' must-apply':''}`;
   card.innerHTML = `
     <div class="card-accent-bar" style="background:${accentColor}"></div>
     <div class="card-top">
       <span class="inst-name">${r.inst}</span>
-      <span class="status-badge ${statusCls}">${statusTxt}</span>
+      ${statusBadgeHtml(r)}
     </div>
     <div class="course-name">${r.course}</div>
     <div class="pills">
-      ${chancePills}
+      ${chancePillHtml(r)}
       <span class="pill p-no" style="opacity:0.7">${r.type}</span>
-      ${r.subject !== r.course ? `<span class="pill p-no" style="opacity:0.6">${r.subject}</span>` : ''}
+      ${r.subject && r.subject !== r.course ? `<span class="pill p-no" style="opacity:0.6">${r.subject}</span>` : ''}
     </div>
     <div class="deadline-bar"><div class="dl-fill" style="width:${pct}%;background:${barColor}"></div></div>
     <div class="card-meta">
       <div class="meta-row"><span class="meta-key">Deadline</span><span class="meta-val">${r.deadline}</span></div>
       <div class="meta-row"><span class="meta-key">Days left</span><span class="meta-val ${daysCls}">${daysStr}</span></div>
       <div class="meta-row"><span class="meta-key">Form fee</span><span class="meta-val">${feeStr}</span></div>
+      <div class="meta-row">
+        <span class="meta-key">Test date</span>
+        <input type="text" placeholder="e.g. 2026-05-10" value="${testD}"
+          style="background:var(--bg);border:1px solid var(--border2);color:var(--text);padding:2px 8px;border-radius:5px;font-size:11px;font-family:var(--mono);width:120px;outline:none"
+          oninput="saveTestDate(${i},this.value)" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border2)'">
+      </div>
+      <div class="meta-row">
+        <span class="meta-key">Interview</span>
+        <input type="text" placeholder="e.g. 2026-05-15" value="${intD}"
+          style="background:var(--bg);border:1px solid var(--border2);color:var(--text);padding:2px 8px;border-radius:5px;font-size:11px;font-family:var(--mono);width:120px;outline:none"
+          oninput="saveInterviewDate(${i},this.value)" onfocus="this.style.borderColor='var(--amber)'" onblur="this.style.borderColor='var(--border2)'">
+      </div>
+    </div>
+    <div class="card-spacer"></div>
+    <div class="status-select-wrap">
+      <div class="status-select-label">Application Stage</div>
+      <div class="status-select">${ssBtns}</div>
     </div>
     ${canApply && hasLink
-      ? `<a href="${r.link}" target="_blank" class="apply-btn go">Apply Now ↗</a>`
-      : `<span class="apply-btn ${r.filled ? 'done' : 'off'}">${r.filled ? '✓ Completed' : 'Closed'}</span>`
+      ? `<a href="${r.link}" target="_blank" class="apply-btn go" style="margin-top:10px">Apply Now ↗</a>`
+      : `<span class="apply-btn off" style="margin-top:10px">${past && r.appStatus === 'Not Applied' ? 'Closed' : r.appStatus}</span>`
     }
     <div class="note-toggle" onclick="toggleNote(${i})">+ note</div>
     <div class="note-area" id="note-${i}">
       <textarea placeholder="Add notes about this application…" oninput="saveNote(${i}, this.value)">${noteVal}</textarea>
-    </div>
-    <div style="display:flex;gap:6px;margin-top:8px">
-      <button class="ctrl-btn" style="flex:1;font-size:10px" onclick="toggleFilled(${i})">
-        ${r.filled ? '↩ Mark Unfilled' : '✓ Mark Filled'}
-      </button>
     </div>
   `;
 
@@ -960,10 +878,7 @@ function renderGrid(items) {
     grid.innerHTML = '<div class="empty"><div class="empty-icon">◎</div><div class="empty-msg">No courses match your filters.</div></div>';
     return;
   }
-  items.forEach((r) => {
-    const idx = DATA.indexOf(r);
-    grid.appendChild(makeCard(r, idx));
-  });
+  items.forEach(r => grid.appendChild(makeCard(r, DATA.indexOf(r))));
 }
 
 function renderList(items) {
@@ -975,27 +890,24 @@ function renderList(items) {
   }
   items.forEach(r => {
     const dl = daysLeft(r.deadline);
-    const isGone = dl < 0;
+    const past = dl < 0;
     const isUrgent = dl >= 0 && dl <= 2;
-    const daysStr = isGone ? 'Expired' : dl === 0 ? 'Today!' : `${dl}d`;
-    const daysCls = isGone ? 'dim' : dl <= 2 ? 'danger' : dl <= 5 ? 'warn' : 'ok';
+    const daysStr = past ? 'Expired' : dl === 0 ? 'Today!' : `${dl}d`;
+    const daysCls = past ? 'dim' : dl <= 2 ? 'danger' : dl <= 5 ? 'warn' : 'ok';
     const feeStr = r.fee > 0 ? `₹${r.fee}` : 'Free';
     const hasLink = r.link && r.link !== '#';
-    let statusHtml;
-    if (r.filled) statusHtml = `<span class="status-badge b-filled">FILLED</span>`;
-    else if (isGone) statusHtml = `<span class="status-badge b-closed">CLOSED</span>`;
-    else statusHtml = `<span class="status-badge b-open">OPEN</span>`;
     const tr = document.createElement('tr');
-    tr.className = (r.filled ? 'filled-row ' : '') + (isUrgent ? 'urgent-row' : '');
+    tr.className = (past && r.appStatus === 'Not Applied' ? 'opacity:0.5;' : '') + (isUrgent ? 'urgent-row' : '');
+    if (past && r.appStatus === 'Not Applied') tr.style.opacity = '0.5';
     tr.innerHTML = `
       <td><span class="list-inst">${r.inst}</span></td>
       <td class="list-course">${r.course}</td>
-      <td>${r.chance ? `<span class="pill p-${r.chance==='Must'?'must':r.chance==='Maybe'?'maybe':'no'}">${r.chance}</span>` : '—'}</td>
+      <td>${r.chance ? `<span class="pill p-${r.chance==='Must'?'must':r.chance==='Maybe'?'maybe':r.chance==='TBD'?'tbd':'no'}">${r.chance}</span>` : '—'}</td>
       <td style="font-family:var(--mono);font-size:12px">${r.deadline}</td>
       <td><span class="meta-val ${daysCls}" style="font-family:var(--mono);font-size:12px">${daysStr}</span></td>
       <td style="font-family:var(--mono);font-size:12px">${feeStr}</td>
-      <td>${statusHtml}</td>
-      <td>${hasLink && !r.filled && !isGone ? `<a href="${r.link}" class="list-link" target="_blank">Apply ↗</a>` : '—'}</td>
+      <td>${statusBadgeHtml(r)}</td>
+      <td>${hasLink && !past ? `<a href="${r.link}" class="list-link" target="_blank">Apply ↗</a>` : '—'}</td>
     `;
     tbody.appendChild(tr);
   });
@@ -1005,34 +917,26 @@ function renderTimeline(items) {
   const tl = document.getElementById('timeline-view');
   tl.innerHTML = '';
   const groups = {};
-  items.forEach(r => {
-    const key = r.deadline || 'Unknown';
-    if (!groups[key]) groups[key] = [];
-    groups[key].push(r);
-  });
-  const sorted = Object.keys(groups).sort();
-  sorted.forEach(date => {
+  items.forEach(r => { const key = r.deadline || 'Unknown'; if (!groups[key]) groups[key] = []; groups[key].push(r); });
+  Object.keys(groups).sort().forEach(date => {
     const dl = daysLeft(date);
-    const isGone = dl < 0;
+    const past = dl < 0;
     const isToday = dl === 0;
     const isUrgent = dl >= 0 && dl <= 2;
-
     const grp = document.createElement('div');
     grp.className = 'timeline-group';
-    const badge = isGone ? '<span class="tl-badge tl-past">Past</span>' :
+    const badge = past ? '<span class="tl-badge tl-past">Past</span>' :
       isToday ? '<span class="tl-badge tl-today">Today</span>' :
       isUrgent ? `<span class="tl-badge tl-urgent">${dl}d left</span>` : '';
-
-    grp.innerHTML = `<div class="timeline-date">${date} ${badge}</div><div class="timeline-items" id="tg-${date.replace(/-/g,'_')}"></div>`;
+    grp.innerHTML = `<div class="timeline-date">${date} ${badge}</div><div class="timeline-items"></div>`;
     tl.appendChild(grp);
-
     const container = grp.querySelector('.timeline-items');
     groups[date].forEach(r => {
-      const chip = document.createElement('div');
       const dl2 = daysLeft(r.deadline);
-      chip.className = `tl-chip${r.filled?' filled-chip':''}${dl2 >= 0 && dl2 <= 2 && !r.filled?' urgent-chip':''}`;
+      const chip = document.createElement('div');
+      chip.className = `tl-chip${past&&r.appStatus==='Not Applied'?' closed-chip':''}${dl2>=0&&dl2<=2&&r.appStatus==='Not Applied'?' urgent-chip':''}`;
       chip.innerHTML = `<span class="tl-inst">${r.inst}</span><span class="tl-name">${r.course}</span>`;
-      if (r.link && r.link !== '#' && !r.filled && dl2 >= 0) {
+      if (r.link && r.link !== '#' && r.appStatus === 'Not Applied' && dl2 >= 0) {
         chip.style.cursor = 'pointer';
         chip.onclick = () => window.open(r.link, '_blank');
       }
@@ -1044,12 +948,9 @@ function renderTimeline(items) {
 function render() {
   const filtered = getFiltered();
   const sorted = sortItems(filtered);
-
   document.getElementById('result-count').textContent = `${sorted.length} of ${DATA.length} courses`;
-
   updateStats();
   buildTabs(getFiltered());
-
   if (currentView === 'grid') renderGrid(sorted);
   else if (currentView === 'list') renderList(sorted);
   else renderTimeline(sorted);
@@ -1060,9 +961,7 @@ function setView(v) {
   document.getElementById('grid-view').style.display = v === 'grid' ? 'grid' : 'none';
   document.getElementById('list-view').style.display = v === 'list' ? 'block' : 'none';
   document.getElementById('timeline-view').style.display = v === 'timeline' ? 'block' : 'none';
-  ['grid','list','timeline'].forEach(n => {
-    document.getElementById('vbtn-'+n).classList.toggle('active', n === v);
-  });
+  ['grid','list','timeline'].forEach(n => document.getElementById('vbtn-'+n).classList.toggle('active', n === v));
   render();
 }
 
@@ -1073,11 +972,9 @@ function resetFilters() {
   document.getElementById('filt-type').value = 'all';
   document.getElementById('filt-subject').value = 'all';
   document.getElementById('sort').value = 'deadline';
-  document.getElementById('hide-filled').checked = false;
-  document.getElementById('hide-closed').checked = false;
-  activeTab = 'all';
-  currentSort = 'deadline';
-  currentSortDir = 1;
+  document.getElementById('hide-closed').checked = true;
+  document.getElementById('hide-applied').checked = false;
+  activeTab = 'all'; currentSort = 'deadline'; currentSortDir = 1;
   render();
 }
 
@@ -1097,21 +994,33 @@ function saveNote(i, val) {
   localStorage.setItem('mtech_notes', JSON.stringify(notes));
 }
 
-function toggleFilled(i) {
-  DATA[i].filled = !DATA[i].filled;
-  filledState[i] = DATA[i].filled;
-  localStorage.setItem('mtech_filled', JSON.stringify(filledState));
+function setAppStatus(i, status) {
+  DATA[i].appStatus = status;
+  appStatusState[i] = status;
+  localStorage.setItem('mtech_app_status', JSON.stringify(appStatusState));
   render();
 }
 
+function saveTestDate(i, val) {
+  DATA[i].test_date = val;
+  testDateState[i] = val;
+  localStorage.setItem('mtech_test_date', JSON.stringify(testDateState));
+}
+
+function saveInterviewDate(i, val) {
+  DATA[i].interview_date = val;
+  interviewDateState[i] = val;
+  localStorage.setItem('mtech_interview_date', JSON.stringify(interviewDateState));
+}
+
 function exportCSV() {
-  const headers = ['Institute','Course','Subject','Type','Priority','Deadline','Days Left','Fee','Status','Link'];
+  const headers = ['Institute','Course','Subject','Type','Priority','Deadline','Days Left','Fee','App Status','Test Date','Interview Date','Link'];
   const rows = DATA.map(r => {
     const dl = daysLeft(r.deadline);
-    const isGone = dl < 0;
-    const status = r.filled ? 'Filled' : isGone ? 'Closed' : 'Open';
-    const daysStr = isGone ? 'Expired' : dl + ' days';
-    return [r.inst, r.course, r.subject, r.type, r.chance||'', r.deadline, daysStr, r.fee, status, r.link].map(v => `"${v}"`).join(',');
+    return [r.inst, r.course, r.subject, r.type, r.chance||'', r.deadline,
+      dl < 0 ? 'Expired' : dl + ' days', r.fee, r.appStatus,
+      r.test_date||'', r.interview_date||'', r.link
+    ].map(v => `"${v}"`).join(',');
   });
   const csv = [headers.join(','), ...rows].join('\n');
   const a = document.createElement('a');
@@ -1123,30 +1032,65 @@ function exportCSV() {
 function printView() { window.print(); }
 
 function copyMustList() {
-  const must = DATA.filter(r => r.chance === 'Must' && !r.filled && daysLeft(r.deadline) >= 0);
+  const must = DATA.filter(r => r.chance === 'Must' && !isDeadlinePast(r) && r.appStatus === 'Not Applied');
   const text = must.map(r => `${r.inst} — ${r.course} (Deadline: ${r.deadline}, Fee: ₹${r.fee})`).join('\n');
-  navigator.clipboard.writeText(text).then(() => {
-    alert('Must-apply list copied to clipboard!\n\n' + text);
-  });
+  navigator.clipboard.writeText(text).then(() => alert('Must-apply list copied!\n\n' + text));
 }
 
-// Wire up events
-['search','filt-status','filt-chance','filt-type','filt-subject','sort'].forEach(id => {
+// ─── BACKUP / RESTORE ────────────────────────────────────────────────────────
+function openBackupModal() { document.getElementById('modal-overlay').classList.add('open'); }
+function closeBackupModal() { document.getElementById('modal-overlay').classList.remove('open'); document.getElementById('restore-area').style.display = 'none'; }
+
+function doExportJSON() {
+  const state = { notes, appStatusState, testDateState, interviewDateState, exportedAt: new Date().toISOString() };
+  const blob = new Blob([JSON.stringify(state, null, 2)], {type: 'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `mtech_tracker_backup_${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+}
+
+function loadRestoreArea() { document.getElementById('restore-area').style.display = 'block'; }
+
+function doRestore() {
+  try {
+    const raw = document.getElementById('restore-json').value.trim();
+    const state = JSON.parse(raw);
+    if (state.notes) { notes = state.notes; localStorage.setItem('mtech_notes', JSON.stringify(notes)); }
+    if (state.appStatusState) { appStatusState = state.appStatusState; localStorage.setItem('mtech_app_status', JSON.stringify(appStatusState)); }
+    if (state.testDateState) { testDateState = state.testDateState; localStorage.setItem('mtech_test_date', JSON.stringify(testDateState)); }
+    if (state.interviewDateState) { interviewDateState = state.interviewDateState; localStorage.setItem('mtech_interview_date', JSON.stringify(interviewDateState)); }
+    DATA.forEach((r, i) => {
+      if (appStatusState[i] !== undefined) r.appStatus = appStatusState[i];
+      if (testDateState[i] !== undefined) r.test_date = testDateState[i];
+      if (interviewDateState[i] !== undefined) r.interview_date = interviewDateState[i];
+    });
+    closeBackupModal();
+    render();
+    alert('✓ State restored successfully!');
+  } catch(e) {
+    alert('Error parsing JSON: ' + e.message);
+  }
+}
+
+// Close modal on overlay click
+document.getElementById('modal-overlay').addEventListener('click', function(e) {
+  if (e.target === this) closeBackupModal();
+});
+
+// Wire events
+['search','filt-status','filt-chance','filt-type','filt-subject'].forEach(id => {
   document.getElementById(id).addEventListener('input', render);
   document.getElementById(id).addEventListener('change', render);
 });
-
-['hide-filled','hide-closed'].forEach(id => {
-  document.getElementById(id).addEventListener('change', render);
-});
-
+['hide-closed','hide-applied'].forEach(id => document.getElementById(id).addEventListener('change', render));
 document.getElementById('sort').addEventListener('change', function() {
   currentSort = this.value.replace('-desc','');
   currentSortDir = this.value.includes('-desc') ? -1 : 1;
   render();
 });
 
-// Initial render
+// Initial render — hide-closed is already checked by default
 render();
 </script>
 </body>
