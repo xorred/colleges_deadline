@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MTech Admission Tracker 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0c10;
+    --surface: #111318;
+    --surface2: #181c24;
+    --border: #1f2535;
+    --border2: #2a3148;
+    --text: #e8eaf0;
+    --muted: #5a6282;
+    --dim: #3a4060;
+    --accent: #4f8ef7;
+    --accent2: #7c5cf6;
+    --green: #22d67a;
+    --amber: #f5a623;
+    --red: #f04a5e;
+    --teal: #0dd6c8;
+    --mono: 'Space Mono', monospace;
+    --sans: 'DM Sans', sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* GRID BACKGROUND */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(79,142,247,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(79,142,247,0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .page { position: relative; z-index: 1; max-width: 1400px; margin: 0 auto; padding: 0 24px 60px; }
+
+  /* HEADER */
+  header {
+    padding: 36px 0 28px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 28px;
+    display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-end; justify-content: space-between;
+  }
+
+  .header-title {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  h1 {
+    font-family: var(--mono);
+    font-size: clamp(24px, 4vw, 38px);
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.1;
+  }
+
+  h1 span { color: var(--accent); }
+
+  .header-sub {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 6px;
+    font-family: var(--mono);
+  }
+
+  .live-dot {
+    display: inline-block; width: 7px; height: 7px;
+    background: var(--green); border-radius: 50%;
+    margin-right: 6px;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(34,214,122,0.4); }
+    50% { opacity: 0.8; box-shadow: 0 0 0 5px rgba(34,214,122,0); }
+  }
+
+  /* STATS */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .stat {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 18px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .stat:hover { border-color: var(--border2); }
+
+  .stat::after {
+    content: '';
+    position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+  }
+
+  .stat.s-total::after { background: var(--accent); }
+  .stat.s-open::after { background: var(--green); }
+  .stat.s-filled::after { background: var(--amber); }
+  .stat.s-closed::after { background: var(--dim); }
+  .stat.s-must::after { background: var(--red); }
+  .stat.s-fee::after { background: var(--teal); }
+
+  .stat-n {
+    font-family: var(--mono);
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .stat.s-open .stat-n { color: var(--green); }
+  .stat.s-filled .stat-n { color: var(--amber); }
+  .stat.s-closed .stat-n { color: var(--muted); }
+  .stat.s-must .stat-n { color: var(--red); }
+  .stat.s-fee .stat-n { color: var(--teal); font-size: 20px; }
+  .stat.s-total .stat-n { color: var(--accent); }
+
+  .stat-l { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; font-family: var(--mono); }
+
+  /* CONTROLS */
+  .controls {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-bottom: 24px;
+    display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end;
+  }
+
+  .ctrl-group { display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 140px; }
+  .ctrl-group label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; font-family: var(--mono); }
+
+  input[type="text"], select {
+    background: var(--bg);
+    border: 1px solid var(--border2);
+    color: var(--text);
+    padding: 9px 13px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-family: var(--sans);
+    outline: none;
+    transition: border-color 0.2s;
+    width: 100%;
+  }
+
+  input[type="text"]:focus, select:focus { border-color: var(--accent); }
+  select option { background: var(--surface2); }
+
+  .search-wrap { position: relative; flex: 2; min-width: 200px; }
+  .search-wrap input { padding-left: 36px; }
+  .search-icon {
+    position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+    color: var(--muted); font-size: 14px; pointer-events: none;
+  }
+
+  .ctrl-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    color: var(--text);
+    padding: 9px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 1px;
+    transition: all 0.2s;
+    white-space: nowrap;
+    align-self: flex-end;
+  }
+
+  .ctrl-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .ctrl-btn.active { background: var(--accent); border-color: var(--accent); color: #000; font-weight: 700; }
+
+  /* VIEW TOGGLES */
+  .view-toggle { display: flex; gap: 6px; align-self: flex-end; }
+  .vbtn {
+    width: 34px; height: 34px;
+    background: var(--bg); border: 1px solid var(--border2);
+    border-radius: 7px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    color: var(--muted); transition: all 0.2s; font-size: 14px;
+  }
+  .vbtn.active { border-color: var(--accent); color: var(--accent); background: rgba(79,142,247,0.1); }
+
+  /* TABS */
+  .tabs {
+    display: flex; gap: 4px; margin-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0;
+    overflow-x: auto; scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+
+  .tab {
+    padding: 8px 18px 12px;
+    font-size: 12px; font-family: var(--mono);
+    letter-spacing: 0.5px;
+    color: var(--muted); cursor: pointer;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: all 0.2s;
+    margin-bottom: -1px;
+  }
+
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  .tab .cnt {
+    display: inline-block; margin-left: 6px;
+    background: var(--border2); border-radius: 10px;
+    padding: 1px 7px; font-size: 10px;
+  }
+
+  .tab.active .cnt { background: rgba(79,142,247,0.2); color: var(--accent); }
+
+  /* PROGRESS BAR */
+  .progress-bar {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-bottom: 24px;
+    display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+  }
+
+  .pb-label { font-size: 11px; color: var(--muted); font-family: var(--mono); white-space: nowrap; }
+
+  .pb-track {
+    flex: 1; height: 6px; background: var(--border);
+    border-radius: 3px; overflow: hidden; min-width: 100px;
+  }
+
+  .pb-fill { height: 100%; border-radius: 3px; transition: width 0.5s ease; }
+  .pb-filled { background: var(--amber); }
+  .pb-open { background: var(--green); }
+
+  /* GRID VIEW */
+  #grid-view { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 14px; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+    animation: fadeIn 0.3s ease forwards;
+    cursor: default;
+  }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  .card:hover {
+    transform: translateY(-3px);
+    border-color: var(--border2);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  }
+
+  .card.urgent { border-left: 3px solid var(--red); }
+  .card.filled { opacity: 0.5; }
+  .card.must-apply { border-top: 2px solid var(--red); }
+
+  .card-accent-bar {
+    position: absolute; top: 0; right: 0;
+    width: 3px; height: 100%;
+    border-radius: 0 12px 12px 0;
+  }
+
+  .card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; gap: 8px; }
+
+  .inst-name {
+    font-family: var(--mono);
+    font-size: 10px; font-weight: 700;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+  }
+
+  .status-badge {
+    font-family: var(--mono);
+    font-size: 9px; font-weight: 700;
+    padding: 3px 9px; border-radius: 20px;
+    text-transform: uppercase; letter-spacing: 0.5px;
+    white-space: nowrap;
+  }
+
+  .b-open { background: rgba(34,214,122,0.12); color: var(--green); border: 1px solid rgba(34,214,122,0.25); }
+  .b-filled { background: rgba(245,166,35,0.12); color: var(--amber); border: 1px solid rgba(245,166,35,0.25); }
+  .b-closed { background: rgba(90,98,130,0.12); color: var(--muted); border: 1px solid rgba(90,98,130,0.25); }
+
+  .course-name {
+    font-size: 15px; font-weight: 600;
+    color: var(--text); margin-bottom: 12px;
+    line-height: 1.3; min-height: 40px;
+  }
+
+  .pills { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 12px; }
+
+  .pill {
+    font-size: 10px; font-family: var(--mono);
+    padding: 2px 9px; border-radius: 20px;
+    font-weight: 700; letter-spacing: 0.3px;
+  }
+
+  .p-must { background: rgba(240,74,94,0.15); color: var(--red); border: 1px solid rgba(240,74,94,0.3); }
+  .p-maybe { background: rgba(79,142,247,0.12); color: var(--accent); border: 1px solid rgba(79,142,247,0.25); }
+  .p-no { background: rgba(90,98,130,0.1); color: var(--muted); border: 1px solid var(--border2); }
+
+  .card-meta { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+
+  .meta-row {
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 12px;
+  }
+
+  .meta-key { color: var(--muted); font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .meta-val { font-weight: 500; color: var(--text); }
+  .meta-val.danger { color: var(--red); }
+  .meta-val.warn { color: var(--amber); }
+  .meta-val.ok { color: var(--green); }
+  .meta-val.dim { color: var(--muted); }
+
+  .deadline-bar {
+    height: 3px; background: var(--border);
+    border-radius: 2px; margin-bottom: 14px; overflow: hidden;
+  }
+
+  .dl-fill { height: 100%; border-radius: 2px; transition: width 0.3s; }
+
+  .apply-btn {
+    display: block; text-align: center;
+    padding: 9px;
+    border-radius: 8px;
+    font-size: 12px; font-weight: 600;
+    font-family: var(--mono);
+    text-decoration: none;
+    letter-spacing: 0.5px;
+    transition: all 0.2s;
+    border: 1px solid transparent;
+  }
+
+  .apply-btn.go {
+    background: rgba(79,142,247,0.12);
+    border-color: rgba(79,142,247,0.3);
+    color: var(--accent);
+  }
+
+  .apply-btn.go:hover {
+    background: var(--accent);
+    color: #000;
+    transform: translateY(-1px);
+  }
+
+  .apply-btn.done { background: rgba(245,166,35,0.08); border-color: rgba(245,166,35,0.2); color: var(--amber); cursor: default; }
+  .apply-btn.off { background: var(--surface2); border-color: var(--border); color: var(--dim); cursor: default; }
+
+  .note-toggle {
+    margin-top: 8px; font-size: 11px;
+    color: var(--muted); cursor: pointer;
+    text-align: center; font-family: var(--mono);
+    transition: color 0.2s;
+  }
+  .note-toggle:hover { color: var(--accent); }
+
+  .note-area {
+    display: none; margin-top: 8px;
+  }
+
+  .note-area textarea {
+    width: 100%; background: var(--bg);
+    border: 1px solid var(--border2); color: var(--text);
+    border-radius: 6px; padding: 8px 10px; font-size: 12px;
+    font-family: var(--sans); resize: vertical; min-height: 60px;
+    outline: none;
+  }
+
+  .note-area textarea:focus { border-color: var(--accent); }
+
+  /* LIST VIEW */
+  #list-view { display: none; }
+
+  .list-table {
+    width: 100%; border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  .list-table thead th {
+    font-family: var(--mono); font-size: 10px;
+    text-transform: uppercase; letter-spacing: 1px;
+    color: var(--muted); padding: 10px 14px;
+    text-align: left; border-bottom: 1px solid var(--border);
+    cursor: pointer; white-space: nowrap;
+    user-select: none;
+  }
+
+  .list-table thead th:hover { color: var(--accent); }
+  .list-table thead th .sort-arrow { margin-left: 4px; color: var(--accent); }
+
+  .list-table tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s;
+    animation: fadeIn 0.3s ease forwards;
+  }
+
+  .list-table tbody tr:hover { background: var(--surface2); }
+  .list-table tbody tr.filled-row { opacity: 0.5; }
+  .list-table tbody tr.urgent-row td:first-child { border-left: 3px solid var(--red); }
+
+  .list-table td {
+    padding: 11px 14px; vertical-align: middle;
+  }
+
+  .list-inst { font-family: var(--mono); font-size: 11px; color: var(--accent); font-weight: 700; }
+  .list-course { font-weight: 500; }
+  .list-link { color: var(--accent); text-decoration: none; font-family: var(--mono); font-size: 11px; }
+  .list-link:hover { text-decoration: underline; }
+
+  /* TIMELINE VIEW */
+  #timeline-view { display: none; }
+
+  .timeline-group { margin-bottom: 28px; }
+
+  .timeline-date {
+    font-family: var(--mono); font-size: 12px;
+    color: var(--accent); padding: 6px 0;
+    margin-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 12px;
+  }
+
+  .tl-badge {
+    font-size: 10px; padding: 2px 8px; border-radius: 10px;
+    font-family: var(--mono);
+  }
+
+  .tl-today { background: rgba(79,142,247,0.15); color: var(--accent); }
+  .tl-urgent { background: rgba(240,74,94,0.15); color: var(--red); }
+  .tl-past { background: rgba(90,98,130,0.1); color: var(--muted); }
+
+  .timeline-items { display: flex; flex-wrap: wrap; gap: 8px; }
+
+  .tl-chip {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px; padding: 8px 14px;
+    font-size: 12px; transition: border-color 0.2s;
+  }
+
+  .tl-chip:hover { border-color: var(--border2); }
+  .tl-chip .tl-inst { font-family: var(--mono); font-size: 10px; color: var(--accent); display: block; margin-bottom: 2px; }
+  .tl-chip .tl-name { color: var(--text); font-weight: 500; }
+  .tl-chip.filled-chip { opacity: 0.4; }
+  .tl-chip.urgent-chip { border-left: 3px solid var(--red); }
+
+  /* EMPTY */
+  .empty { text-align: center; padding: 60px 20px; color: var(--muted); }
+  .empty-icon { font-size: 40px; margin-bottom: 12px; opacity: 0.4; }
+  .empty-msg { font-family: var(--mono); font-size: 13px; }
+
+  /* DEADLINE ALERT BANNER */
+  .alert-banner {
+    background: rgba(240,74,94,0.08);
+    border: 1px solid rgba(240,74,94,0.25);
+    border-radius: 10px;
+    padding: 12px 18px;
+    margin-bottom: 20px;
+    font-size: 12px;
+    color: var(--text);
+    display: none;
+    align-items: center; gap: 10px;
+    font-family: var(--mono);
+  }
+
+  .alert-banner .alert-icon { color: var(--red); font-size: 16px; }
+
+  /* EXPORT / ACTIONS */
+  .action-bar {
+    display: flex; gap: 8px; flex-wrap: wrap;
+    margin-bottom: 20px; align-items: center;
+  }
+
+  .result-count { font-size: 12px; color: var(--muted); font-family: var(--mono); margin-right: auto; }
+
+  /* DARK SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--dim); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+  /* RESPONSIVE */
+  @media (max-width: 700px) {
+    .page { padding: 0 14px 40px; }
+    h1 { font-size: 22px; }
+    #grid-view { grid-template-columns: 1fr; }
+    .list-table thead th:nth-child(n+4) { display: none; }
+    .list-table td:nth-child(n+4) { display: none; }
+  }
+
+  /* TOOLTIP */
+  [data-tip] { position: relative; cursor: help; }
+  [data-tip]:hover::after {
+    content: attr(data-tip);
+    position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%);
+    background: var(--surface2); color: var(--text);
+    border: 1px solid var(--border2); border-radius: 6px;
+    padding: 5px 10px; font-size: 11px; white-space: nowrap; z-index: 100;
+    font-family: var(--mono);
+    pointer-events: none;
+  }
+
+  /* CHECKBOX */
+  .filled-toggle { display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 12px; color: var(--muted); user-select: none; align-self: flex-end; padding: 9px 0; }
+  .filled-toggle input { accent-color: var(--amber); width: 14px; height: 14px; cursor: pointer; }
+  .filled-toggle:hover { color: var(--text); }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <header>
+    <div>
+      <div class="header-title">// admission tracker</div>
+      <h1>MTech Portal <span>2026</span></h1>
+      <div class="header-sub"><span class="live-dot"></span>Auto-synced to today's date</div>
+    </div>
+  </header>
+
+  <div class="stats" id="stats-bar"></div>
+
+  <div id="alert-banner" class="alert-banner">
+    <span class="alert-icon">⚠</span>
+    <span id="alert-text"></span>
+  </div>
+
+  <div id="progress-row" class="progress-bar">
+    <div class="pb-label">FORMS FILLED</div>
+    <div class="pb-track"><div class="pb-fill pb-filled" id="pb-filled"></div></div>
+    <div class="pb-label" id="pb-label-filled">0 / 0</div>
+    <div style="width:1px;height:20px;background:var(--border);margin:0 4px"></div>
+    <div class="pb-label">OPEN DEADLINES</div>
+    <div class="pb-track"><div class="pb-fill pb-open" id="pb-open"></div></div>
+    <div class="pb-label" id="pb-label-open">0 remaining</div>
+  </div>
+
+  <div class="controls">
+    <div class="search-wrap">
+      <label style="font-size:10px;color:var(--muted);font-family:var(--mono);letter-spacing:1px;display:block;margin-bottom:5px;text-transform:uppercase">Search</label>
+      <span class="search-icon">⌕</span>
+      <input type="text" id="search" placeholder="Institute, course, subject…">
+    </div>
+
+    <div class="ctrl-group">
+      <label>Status</label>
+      <select id="filt-status">
+        <option value="all">All Status</option>
+        <option value="open">Open Only</option>
+        <option value="filled">Filled Only</option>
+        <option value="closed">Closed Only</option>
+      </select>
+    </div>
+
+    <div class="ctrl-group">
+      <label>Priority</label>
+      <select id="filt-chance">
+        <option value="all">All Priorities</option>
+        <option value="Must">Must Apply</option>
+        <option value="Maybe">Maybe</option>
+        <option value="No">Low Priority</option>
+      </select>
+    </div>
+
+    <div class="ctrl-group">
+      <label>Course Type</label>
+      <select id="filt-type">
+        <option value="all">All Types</option>
+        <option value="MTech TA">MTech TA</option>
+        <option value="MTech RA">MTech RA</option>
+        <option value="MS-R">MS Research</option>
+        <option value="Self Sponsor">Self Sponsor</option>
+        <option value="MTech HVA">MTech HVA</option>
+      </select>
+    </div>
+
+    <div class="ctrl-group">
+      <label>Subject</label>
+      <select id="filt-subject">
+        <option value="all">All Subjects</option>
+      </select>
+    </div>
+
+    <div class="ctrl-group">
+      <label>Sort By</label>
+      <select id="sort">
+        <option value="deadline">Deadline (earliest)</option>
+        <option value="deadline-desc">Deadline (latest)</option>
+        <option value="inst">Institute A-Z</option>
+        <option value="chance">Priority</option>
+        <option value="fee">Form Fee</option>
+      </select>
+    </div>
+
+    <label class="filled-toggle">
+      <input type="checkbox" id="hide-filled"> Hide filled
+    </label>
+
+    <label class="filled-toggle">
+      <input type="checkbox" id="hide-closed"> Hide closed
+    </label>
+
+    <button class="ctrl-btn" onclick="resetFilters()">↺ Reset</button>
+
+    <div class="view-toggle">
+      <button class="vbtn active" id="vbtn-grid" onclick="setView('grid')" title="Grid view">⊞</button>
+      <button class="vbtn" id="vbtn-list" onclick="setView('list')" title="List view">☰</button>
+      <button class="vbtn" id="vbtn-timeline" onclick="setView('timeline')" title="Timeline view">◫</button>
+    </div>
+  </div>
+
+  <div class="action-bar">
+    <span class="result-count" id="result-count">Loading…</span>
+    <button class="ctrl-btn" onclick="exportCSV()">↓ Export CSV</button>
+    <button class="ctrl-btn" onclick="printView()">⎙ Print</button>
+    <button class="ctrl-btn" onclick="copyMustList()">⧉ Copy Must-Apply List</button>
+  </div>
+
+  <div class="tabs" id="tabs-bar"></div>
+
+  <div id="grid-view"></div>
+  <div id="list-view">
+    <div style="overflow-x:auto">
+      <table class="list-table">
+        <thead>
+          <tr>
+            <th onclick="sortByCol('inst')">Institute <span class="sort-arrow" id="th-inst"></span></th>
+            <th onclick="sortByCol('course')">Course <span class="sort-arrow" id="th-course"></span></th>
+            <th onclick="sortByCol('chance')">Priority <span class="sort-arrow" id="th-chance"></span></th>
+            <th onclick="sortByCol('deadline')">Deadline <span class="sort-arrow" id="th-deadline"></span></th>
+            <th onclick="sortByCol('days')">Days Left <span class="sort-arrow" id="th-days"></span></th>
+            <th onclick="sortByCol('fee')">Fee <span class="sort-arrow" id="th-fee"></span></th>
+            <th>Status</th>
+            <th>Link</th>
+          </tr>
+        </thead>
+        <tbody id="list-body"></tbody>
+      </table>
+    </div>
+  </div>
+  <div id="timeline-view"></div>
+
+</div>
+
+<script>
+const DATA = [
+  {inst:"IISc",course:"MTech TA AI",subject:"AI",type:"MTech TA",chance:"Maybe",deadline:"2026-04-06",filled:true,link:"https://admissions.iisc.ac.in/",fee:800},
+  {inst:"IISc",course:"MTech TA CDS",subject:"CDS",type:"MTech TA",chance:"Maybe",deadline:"2026-04-06",filled:true,link:"https://admissions.iisc.ac.in/",fee:800},
+  {inst:"IISc",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"Maybe",deadline:"2026-04-06",filled:true,link:"https://admissions.iisc.ac.in/",fee:800},
+  {inst:"IISc",course:"MTech RA CSE",subject:"CSE",type:"MTech RA",chance:"Maybe",deadline:"2026-04-06",filled:true,link:"https://admissions.iisc.ac.in/",fee:800},
+  {inst:"IISc",course:"MTech RA CDS",subject:"CDS",type:"MTech RA",chance:"Maybe",deadline:"2026-04-06",filled:true,link:"https://admissions.iisc.ac.in/",fee:800},
+  {inst:"IIT Bombay",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"No",deadline:"2026-04-06",filled:false,link:"https://www.iitb.ac.in/newacadhome/msResearch.jsp",fee:150},
+  {inst:"IIT Bombay",course:"MTech RA CSE",subject:"CSE",type:"MTech RA",chance:"Maybe",deadline:"2026-04-10",filled:false,link:"https://www.iitb.ac.in/newacadhome/msResearch.jsp",fee:0},
+  {inst:"IIT Bombay",course:"MS-R CSE",subject:"CSE",type:"MS-R",chance:"Maybe",deadline:"2026-04-10",filled:false,link:"https://www.iitb.ac.in/newacadhome/msResearch.jsp",fee:0},
+  {inst:"IIT Bombay",course:"MS-R CMInDS",subject:"CMInDS",type:"MS-R",chance:"Maybe",deadline:"2026-04-10",filled:false,link:"https://www.iitb.ac.in/newacadhome/msResearch.jsp",fee:0},
+  {inst:"IIT Madras",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"No",deadline:"2026-04-27",filled:false,link:"https://mtechadm.iitm.ac.in/",fee:300},
+  {inst:"IIT Madras",course:"MTech TA DSAI",subject:"DSAI",type:"MTech TA",chance:"No",deadline:"2026-04-27",filled:false,link:"https://mtechadm.iitm.ac.in/",fee:300},
+  {inst:"IIT Madras",course:"MS-R CSE",subject:"CSE",type:"MS-R",chance:"Maybe",deadline:"2026-04-01",filled:false,link:"https://mtechadm.iitm.ac.in/",fee:300},
+  {inst:"IIT Madras",course:"MS-R DSAI",subject:"DSAI",type:"MS-R",chance:"Maybe",deadline:"2026-04-01",filled:false,link:"https://mtechadm.iitm.ac.in/",fee:300},
+  {inst:"IIT Delhi",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"No",deadline:"2026-04-11",filled:false,link:"https://home.iitd.ac.in/admissions.php",fee:300},
+  {inst:"IIT Delhi",course:"MTech TA CTech",subject:"CTech",type:"MTech TA",chance:"Maybe",deadline:"2026-04-11",filled:false,link:"https://home.iitd.ac.in/admissions.php",fee:300},
+  {inst:"IIT Delhi",course:"MTech TA Robotics",subject:"Robotics",type:"MTech TA",chance:"Maybe",deadline:"2026-04-11",filled:false,link:"https://home.iitd.ac.in/admissions.php",fee:300},
+  {inst:"IIT Delhi",course:"MTech TA Cyber Security",subject:"Cyber Security",type:"MTech TA",chance:"Maybe",deadline:"2026-04-11",filled:false,link:"https://home.iitd.ac.in/admissions.php",fee:300},
+  {inst:"IIT Delhi",course:"MTech TA MINDS",subject:"MINDS",type:"MTech TA",chance:"Maybe",deadline:"2026-04-11",filled:false,link:"https://home.iitd.ac.in/admissions.php",fee:300},
+  {inst:"IIT Delhi",course:"MS-R CSE",subject:"CSE",type:"MS-R",chance:"Maybe",deadline:"2026-04-11",filled:false,link:"https://home.iitd.ac.in/admissions.php",fee:300},
+  {inst:"IIT Delhi",course:"MS-R MINDS",subject:"MINDS",type:"MS-R",chance:"Maybe",deadline:"2026-04-11",filled:false,link:"https://home.iitd.ac.in/admissions.php",fee:200},
+  {inst:"IIT Delhi",course:"MTech HVA CSE",subject:"CSE",type:"MTech HVA",chance:"Maybe",deadline:"2026-04-11",filled:false,link:"https://home.iitd.ac.in/admissions.php",fee:200},
+  {inst:"IIT Delhi",course:"MTech HVA MINDS",subject:"MINDS",type:"MTech HVA",chance:"Maybe",deadline:"2026-04-11",filled:false,link:"https://home.iitd.ac.in/admissions.php",fee:200},
+  {inst:"IIT Kanpur",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"No",deadline:"2026-04-13",filled:false,link:"https://www.iitk.ac.in/doaa/admission/",fee:500},
+  {inst:"IIT Kanpur",course:"MTech TA Cognitive Systems",subject:"Cognitive Systems",type:"MTech TA",chance:"Maybe",deadline:"2026-04-13",filled:false,link:"https://www.iitk.ac.in/doaa/admission/",fee:500},
+  {inst:"IIT Kanpur",course:"MS-R CSE",subject:"CSE",type:"MS-R",chance:"Maybe",deadline:"2026-04-13",filled:false,link:"https://www.iitk.ac.in/doaa/admission/",fee:500},
+  {inst:"IIT Kanpur",course:"MS-R Cyber Security",subject:"Cyber Security",type:"MS-R",chance:"Maybe",deadline:"2026-04-13",filled:false,link:"https://www.iitk.ac.in/doaa/admission/",fee:500},
+  {inst:"IIT Hyderabad",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"Maybe",deadline:"2026-04-17",filled:false,link:"https://erp.iith.ac.in/Admissions/#/register",fee:250},
+  {inst:"IIT Hyderabad",course:"MTech TA AI",subject:"AI",type:"MTech TA",chance:"Maybe",deadline:"2026-04-17",filled:false,link:"https://erp.iith.ac.in/Admissions/#/register",fee:250},
+  {inst:"IIT Hyderabad",course:"MTech RA CSE",subject:"CSE",type:"MTech RA",chance:"Maybe",deadline:"2026-04-17",filled:false,link:"https://erp.iith.ac.in/Admissions/#/register",fee:250},
+  {inst:"IIT Hyderabad",course:"MTech RA AI",subject:"AI",type:"MTech RA",chance:"Maybe",deadline:"2026-04-17",filled:false,link:"https://erp.iith.ac.in/Admissions/#/register",fee:250},
+  {inst:"IIT Hyderabad",course:"Self Sponsor CSE",subject:"CSE",type:"Self Sponsor",chance:"Must",deadline:"2026-04-17",filled:false,link:"https://erp.iith.ac.in/Admissions/#/register",fee:500},
+  {inst:"IIT Hyderabad",course:"Self Sponsor AI",subject:"AI",type:"Self Sponsor",chance:"Must",deadline:"2026-04-17",filled:false,link:"https://erp.iith.ac.in/Admissions/#/register",fee:500},
+  {inst:"IIT Hyderabad",course:"MTech TA Smart Mobility",subject:"Smart Mobility",type:"MTech TA",chance:"",deadline:"2026-04-17",filled:false,link:"https://erp.iith.ac.in/Admissions/#/register",fee:250},
+  {inst:"IIT Kharagpur",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"Maybe",deadline:"2026-04-18",filled:false,link:"https://gateoffice.iitkgp.ac.in/jmp/",fee:250},
+  {inst:"IIT Kharagpur",course:"MTech TA OR & Data Analytics",subject:"Data Analytics",type:"MTech TA",chance:"Maybe",deadline:"2026-04-18",filled:false,link:"https://gateoffice.iitkgp.ac.in/jmp/",fee:0},
+  {inst:"IIT Kharagpur",course:"MTech TA Safety Engineering",subject:"Safety Engineering",type:"MTech TA",chance:"Maybe",deadline:"2026-04-18",filled:false,link:"https://gateoffice.iitkgp.ac.in/jmp/",fee:0},
+  {inst:"IIT Kharagpur",course:"MTech TA AI",subject:"AI",type:"MTech TA",chance:"Maybe",deadline:"2026-04-18",filled:false,link:"https://gateoffice.iitkgp.ac.in/jmp/",fee:0},
+  {inst:"IIT Kharagpur",course:"MTech TA Embedded Controls",subject:"Embedded Systems",type:"MTech TA",chance:"",deadline:"2026-04-18",filled:false,link:"https://gateoffice.iitkgp.ac.in/jmp/",fee:0},
+  {inst:"IIT Guwahati",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"Maybe",deadline:"2026-04-10",filled:false,link:"https://www.iitg.ac.in/acad/admission/",fee:300},
+  {inst:"IIT Guwahati",course:"MTech TA DS",subject:"Data Science",type:"MTech TA",chance:"Maybe",deadline:"2026-04-10",filled:false,link:"https://www.iitg.ac.in/acad/admission/",fee:300},
+  {inst:"IIT Guwahati",course:"MTech TA Robotics & AI",subject:"Robotics",type:"MTech TA",chance:"Maybe",deadline:"2026-04-10",filled:false,link:"https://www.iitg.ac.in/acad/admission/",fee:300},
+  {inst:"IIT Roorkee",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"",deadline:"2026-04-20",filled:false,link:"https://iitr.ac.in/admissions/",fee:0},
+  {inst:"IIT Roorkee",course:"MTech TA AI",subject:"AI",type:"MTech TA",chance:"",deadline:"2026-04-20",filled:false,link:"https://iitr.ac.in/admissions/",fee:0},
+  {inst:"IIT Roorkee",course:"MTech TA DS",subject:"Data Science",type:"MTech TA",chance:"",deadline:"2026-04-20",filled:false,link:"https://iitr.ac.in/admissions/",fee:0},
+  {inst:"IIT Roorkee",course:"MTech TA Math Computing",subject:"Math Computing",type:"MTech TA",chance:"",deadline:"2026-04-20",filled:false,link:"https://iitr.ac.in/admissions/",fee:0},
+  {inst:"IIT BHU",course:"MTech TA AI",subject:"AI",type:"MTech TA",chance:"Maybe",deadline:"2026-04-13",filled:false,link:"https://iitbhu.ac.in/admissions",fee:500},
+  {inst:"IIT BHU",course:"MTech TA IOT",subject:"IOT",type:"MTech TA",chance:"Maybe",deadline:"2026-04-13",filled:false,link:"https://iitbhu.ac.in/admissions",fee:500},
+  {inst:"IIT Ropar",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"Must",deadline:"2026-04-15",filled:false,link:"#",fee:500},
+  {inst:"IIT Ropar",course:"MTech TA AI",subject:"AI",type:"MTech TA",chance:"Must",deadline:"2026-04-15",filled:false,link:"#",fee:500},
+  {inst:"ISM Dhanbad",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"Must",deadline:"2026-04-19",filled:false,link:"https://admission.iitism.ac.in/index.php/admission/mtech",fee:600},
+  {inst:"ISM Dhanbad",course:"MTech TA DS",subject:"Data Science",type:"MTech TA",chance:"Must",deadline:"2026-04-19",filled:false,link:"https://admission.iitism.ac.in/index.php/admission/mtech",fee:600},
+  {inst:"IIT Jodhpur",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"Must",deadline:"2026-04-15",filled:false,link:"#",fee:900},
+  {inst:"IIT Jodhpur",course:"MTech TA AI",subject:"AI",type:"MTech TA",chance:"",deadline:"2026-04-15",filled:false,link:"#",fee:0},
+  {inst:"IIT Jodhpur",course:"MTech TA DCS",subject:"DCS",type:"MTech TA",chance:"Must",deadline:"2026-04-15",filled:false,link:"#",fee:900},
+  {inst:"IIT Jammu",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"Must",deadline:"2026-04-14",filled:false,link:"#",fee:300},
+  {inst:"IIT Jammu",course:"MTech RA CSE",subject:"CSE",type:"MTech RA",chance:"Must",deadline:"2026-04-14",filled:true,link:"#",fee:0},
+  {inst:"IIIT Hyderabad",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"Maybe",deadline:"2026-03-31",filled:false,link:"#",fee:2500},
+  {inst:"IIT Indore",course:"MTech RA CSE",subject:"CSE",type:"MTech RA",chance:"",deadline:"2026-04-24",filled:false,link:"https://academic.iiti.ac.in:8443/nregistrationmtech.jsp",fee:800},
+  {inst:"IIT Gandhinagar",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"",deadline:"2026-04-15",filled:false,link:"#",fee:300},
+  {inst:"IIT Gandhinagar",course:"MTech TA AI",subject:"AI",type:"MTech TA",chance:"",deadline:"2026-04-15",filled:false,link:"#",fee:300},
+  {inst:"IIT Patna",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"",deadline:"2026-04-20",filled:false,link:"#",fee:500},
+  {inst:"IIT Patna",course:"MTech TA AI",subject:"AI",type:"MTech TA",chance:"",deadline:"2026-04-20",filled:false,link:"#",fee:500},
+  {inst:"IIT Mandi",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"",deadline:"2026-04-17",filled:false,link:"#",fee:100},
+  {inst:"IIT Bhubaneswar",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"",deadline:"2026-04-20",filled:false,link:"#",fee:0},
+  {inst:"IIT Bhubaneswar",course:"MTech TA AI",subject:"AI",type:"MTech TA",chance:"",deadline:"2026-04-20",filled:false,link:"#",fee:0},
+  {inst:"IIT Goa",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"",deadline:"2026-04-23",filled:false,link:"https://iitgoa.ac.in/mtech-admissions/",fee:0},
+  {inst:"IIIT Bangalore",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"",deadline:"2026-05-04",filled:false,link:"https://erp.iiitb.net/applicant-portal/",fee:1000},
+  {inst:"IIT Tirupati",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"",deadline:"2026-04-20",filled:false,link:"#",fee:0},
+  {inst:"IIT Dharwad",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"",deadline:"2026-04-26",filled:false,link:"#",fee:0},
+  {inst:"IIT Palakkad",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"",deadline:"2026-04-25",filled:false,link:"#",fee:0},
+  {inst:"IIT Bhilai",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"",deadline:"2026-04-20",filled:false,link:"#",fee:0},
+  {inst:"ISI Kolkata",course:"MTech TA CSE",subject:"CSE",type:"MTech TA",chance:"",deadline:"2026-03-26",filled:false,link:"#",fee:750}
+];
+
+// State
+let notes = JSON.parse(localStorage.getItem('mtech_notes') || '{}');
+let filledState = JSON.parse(localStorage.getItem('mtech_filled') || '{}');
+let currentView = 'grid';
+let currentSort = 'deadline';
+let currentSortDir = 1;
+let activeTab = 'all';
+
+// Populate filled from DATA and override with saved state
+DATA.forEach((r,i) => {
+  if (filledState[i] !== undefined) r.filled = filledState[i];
+});
+
+const today = new Date(); today.setHours(0,0,0,0);
+
+function daysLeft(dl) {
+  const d = new Date(dl); d.setHours(0,0,0,0);
+  return Math.ceil((d - today) / 86400000);
+}
+
+function chanceOrder(c) { return {Must:0,Maybe:1,No:2}[c] ?? 3; }
+
+// Build subject filter options
+const subjects = [...new Set(DATA.map(r => r.subject).filter(Boolean))].sort();
+const subSel = document.getElementById('filt-subject');
+subjects.forEach(s => {
+  const o = document.createElement('option'); o.value = s; o.textContent = s;
+  subSel.appendChild(o);
+});
+
+// Build institute tabs
+const institutes = ['all', ...new Set(DATA.map(r => r.inst))];
+
+function buildTabs(items) {
+  const bar = document.getElementById('tabs-bar');
+  bar.innerHTML = '';
+  institutes.forEach(inst => {
+    const count = inst === 'all' ? items.length : items.filter(r => r.inst === inst).length;
+    const tab = document.createElement('div');
+    tab.className = 'tab' + (activeTab === inst ? ' active' : '');
+    tab.innerHTML = `${inst === 'all' ? 'All Institutes' : inst} <span class="cnt">${count}</span>`;
+    tab.onclick = () => { activeTab = inst; render(); };
+    bar.appendChild(tab);
+  });
+}
+
+function getFiltered() {
+  const q = document.getElementById('search').value.toLowerCase();
+  const fs = document.getElementById('filt-status').value;
+  const fc = document.getElementById('filt-chance').value;
+  const ft = document.getElementById('filt-type').value;
+  const fsub = document.getElementById('filt-subject').value;
+  const hf = document.getElementById('hide-filled').checked;
+  const hc = document.getElementById('hide-closed').checked;
+
+  return DATA.filter((r, i) => {
+    const dl = daysLeft(r.deadline);
+    const isGone = dl < 0;
+
+    if (activeTab !== 'all' && r.inst !== activeTab) return false;
+    if (q && !r.inst.toLowerCase().includes(q) && !r.course.toLowerCase().includes(q) && !r.subject.toLowerCase().includes(q)) return false;
+    if (fs === 'open' && (isGone || r.filled)) return false;
+    if (fs === 'filled' && !r.filled) return false;
+    if (fs === 'closed' && !isGone) return false;
+    if (fc !== 'all' && r.chance !== fc) return false;
+    if (ft !== 'all' && !r.type.startsWith(ft)) return false;
+    if (fsub !== 'all' && r.subject !== fsub) return false;
+    if (hf && r.filled) return false;
+    if (hc && isGone && !r.filled) return false;
+    return true;
+  });
+}
+
+function sortItems(items) {
+  const s = currentSort;
+  return [...items].sort((a, b) => {
+    let va, vb;
+    if (s === 'deadline' || s === 'days') {
+      va = new Date(a.deadline); vb = new Date(b.deadline);
+    } else if (s === 'inst') {
+      va = a.inst; vb = b.inst;
+      return currentSortDir * va.localeCompare(vb);
+    } else if (s === 'course') {
+      va = a.course; vb = b.course;
+      return currentSortDir * va.localeCompare(vb);
+    } else if (s === 'chance') {
+      va = chanceOrder(a.chance); vb = chanceOrder(b.chance);
+    } else if (s === 'fee') {
+      va = a.fee; vb = b.fee;
+    } else {
+      va = new Date(a.deadline); vb = new Date(b.deadline);
+    }
+    return currentSortDir * (va < vb ? -1 : va > vb ? 1 : 0);
+  });
+}
+
+function updateStats() {
+  const open = DATA.filter(r => !r.filled && daysLeft(r.deadline) >= 0).length;
+  const filled = DATA.filter(r => r.filled).length;
+  const closed = DATA.filter(r => !r.filled && daysLeft(r.deadline) < 0).length;
+  const must = DATA.filter(r => r.chance === 'Must' && !r.filled && daysLeft(r.deadline) >= 0).length;
+  const totalFee = DATA.filter(r => !r.filled && daysLeft(r.deadline) >= 0)
+    .reduce((s, r) => s + (r.fee || 0), 0);
+
+  document.getElementById('stats-bar').innerHTML = `
+    <div class="stat s-total"><div class="stat-n">${DATA.length}</div><div class="stat-l">Total Courses</div></div>
+    <div class="stat s-open"><div class="stat-n">${open}</div><div class="stat-l">Open</div></div>
+    <div class="stat s-filled"><div class="stat-n">${filled}</div><div class="stat-l">Filled</div></div>
+    <div class="stat s-closed"><div class="stat-n">${closed}</div><div class="stat-l">Closed</div></div>
+    <div class="stat s-must"><div class="stat-n">${must}</div><div class="stat-l">Must Apply</div></div>
+    <div class="stat s-fee" data-tip="Total fees for all open applications"><div class="stat-n">₹${totalFee.toLocaleString()}</div><div class="stat-l">Pending Fees</div></div>
+  `;
+
+  const total = DATA.length;
+  document.getElementById('pb-filled').style.width = (filled / total * 100) + '%';
+  document.getElementById('pb-label-filled').textContent = `${filled} / ${total}`;
+  document.getElementById('pb-open').style.width = (open / total * 100) + '%';
+  document.getElementById('pb-label-open').textContent = `${open} remaining`;
+
+  // Alert banner for urgent deadlines
+  const urgent = DATA.filter(r => !r.filled && daysLeft(r.deadline) >= 0 && daysLeft(r.deadline) <= 2);
+  const banner = document.getElementById('alert-banner');
+  if (urgent.length > 0) {
+    banner.style.display = 'flex';
+    document.getElementById('alert-text').textContent =
+      `${urgent.length} deadline${urgent.length > 1 ? 's' : ''} in ≤2 days: ${urgent.map(r => r.inst + ' ' + r.course).join(' · ')}`;
+  } else {
+    banner.style.display = 'none';
+  }
+}
+
+function makeCard(r, i) {
+  const dl = daysLeft(r.deadline);
+  const isGone = dl < 0;
+  const isUrgent = dl >= 0 && dl <= 2;
+  const isMust = r.chance === 'Must';
+  const hasLink = r.link && r.link !== '#';
+  const canApply = !r.filled && !isGone;
+
+  let statusCls, statusTxt;
+  if (r.filled) { statusCls = 'b-filled'; statusTxt = 'FILLED'; }
+  else if (isGone) { statusCls = 'b-closed'; statusTxt = 'CLOSED'; }
+  else { statusCls = 'b-open'; statusTxt = 'OPEN'; }
+
+  const daysStr = isGone ? 'Expired' : dl === 0 ? 'TODAY!' : `${dl}d left`;
+  const daysCls = isGone ? 'dim' : dl <= 2 ? 'danger' : dl <= 5 ? 'warn' : 'ok';
+
+  const feeStr = r.fee > 0 ? `₹${r.fee.toLocaleString()}` : 'Free';
+
+  const chancePills = r.chance
+    ? `<span class="pill p-${r.chance === 'Must' ? 'must' : r.chance === 'Maybe' ? 'maybe' : 'no'}">${r.chance}</span>`
+    : '';
+
+  // Deadline urgency bar (shows how close deadline is within a 60-day window)
+  const totalDays = 60;
+  const pct = isGone ? 0 : Math.max(0, Math.min(100, (dl / totalDays) * 100));
+  const barColor = isGone ? 'var(--dim)' : dl <= 2 ? 'var(--red)' : dl <= 7 ? 'var(--amber)' : 'var(--green)';
+
+  const noteVal = notes[i] || '';
+
+  const accentColor = r.filled ? 'var(--amber)' : isGone ? 'var(--dim)' : isMust ? 'var(--red)' : 'var(--accent2)';
+
+  const card = document.createElement('div');
+  card.className = `card${r.filled?' filled':''}${isUrgent?' urgent':''}${isMust&&!r.filled&&!isGone?' must-apply':''}`;
+  card.innerHTML = `
+    <div class="card-accent-bar" style="background:${accentColor}"></div>
+    <div class="card-top">
+      <span class="inst-name">${r.inst}</span>
+      <span class="status-badge ${statusCls}">${statusTxt}</span>
+    </div>
+    <div class="course-name">${r.course}</div>
+    <div class="pills">
+      ${chancePills}
+      <span class="pill p-no" style="opacity:0.7">${r.type}</span>
+      ${r.subject !== r.course ? `<span class="pill p-no" style="opacity:0.6">${r.subject}</span>` : ''}
+    </div>
+    <div class="deadline-bar"><div class="dl-fill" style="width:${pct}%;background:${barColor}"></div></div>
+    <div class="card-meta">
+      <div class="meta-row"><span class="meta-key">Deadline</span><span class="meta-val">${r.deadline}</span></div>
+      <div class="meta-row"><span class="meta-key">Days left</span><span class="meta-val ${daysCls}">${daysStr}</span></div>
+      <div class="meta-row"><span class="meta-key">Form fee</span><span class="meta-val">${feeStr}</span></div>
+    </div>
+    ${canApply && hasLink
+      ? `<a href="${r.link}" target="_blank" class="apply-btn go">Apply Now ↗</a>`
+      : `<span class="apply-btn ${r.filled ? 'done' : 'off'}">${r.filled ? '✓ Completed' : 'Closed'}</span>`
+    }
+    <div class="note-toggle" onclick="toggleNote(${i})">+ note</div>
+    <div class="note-area" id="note-${i}">
+      <textarea placeholder="Add notes about this application…" oninput="saveNote(${i}, this.value)">${noteVal}</textarea>
+    </div>
+    <div style="display:flex;gap:6px;margin-top:8px">
+      <button class="ctrl-btn" style="flex:1;font-size:10px" onclick="toggleFilled(${i})">
+        ${r.filled ? '↩ Mark Unfilled' : '✓ Mark Filled'}
+      </button>
+    </div>
+  `;
+
+  return card;
+}
+
+function renderGrid(items) {
+  const grid = document.getElementById('grid-view');
+  grid.innerHTML = '';
+  if (!items.length) {
+    grid.innerHTML = '<div class="empty"><div class="empty-icon">◎</div><div class="empty-msg">No courses match your filters.</div></div>';
+    return;
+  }
+  items.forEach((r) => {
+    const idx = DATA.indexOf(r);
+    grid.appendChild(makeCard(r, idx));
+  });
+}
+
+function renderList(items) {
+  const tbody = document.getElementById('list-body');
+  tbody.innerHTML = '';
+  if (!items.length) {
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:40px;color:var(--muted);font-family:var(--mono)">No matching courses.</td></tr>';
+    return;
+  }
+  items.forEach(r => {
+    const dl = daysLeft(r.deadline);
+    const isGone = dl < 0;
+    const isUrgent = dl >= 0 && dl <= 2;
+    const daysStr = isGone ? 'Expired' : dl === 0 ? 'Today!' : `${dl}d`;
+    const daysCls = isGone ? 'dim' : dl <= 2 ? 'danger' : dl <= 5 ? 'warn' : 'ok';
+    const feeStr = r.fee > 0 ? `₹${r.fee}` : 'Free';
+    const hasLink = r.link && r.link !== '#';
+    let statusHtml;
+    if (r.filled) statusHtml = `<span class="status-badge b-filled">FILLED</span>`;
+    else if (isGone) statusHtml = `<span class="status-badge b-closed">CLOSED</span>`;
+    else statusHtml = `<span class="status-badge b-open">OPEN</span>`;
+    const tr = document.createElement('tr');
+    tr.className = (r.filled ? 'filled-row ' : '') + (isUrgent ? 'urgent-row' : '');
+    tr.innerHTML = `
+      <td><span class="list-inst">${r.inst}</span></td>
+      <td class="list-course">${r.course}</td>
+      <td>${r.chance ? `<span class="pill p-${r.chance==='Must'?'must':r.chance==='Maybe'?'maybe':'no'}">${r.chance}</span>` : '—'}</td>
+      <td style="font-family:var(--mono);font-size:12px">${r.deadline}</td>
+      <td><span class="meta-val ${daysCls}" style="font-family:var(--mono);font-size:12px">${daysStr}</span></td>
+      <td style="font-family:var(--mono);font-size:12px">${feeStr}</td>
+      <td>${statusHtml}</td>
+      <td>${hasLink && !r.filled && !isGone ? `<a href="${r.link}" class="list-link" target="_blank">Apply ↗</a>` : '—'}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function renderTimeline(items) {
+  const tl = document.getElementById('timeline-view');
+  tl.innerHTML = '';
+  const groups = {};
+  items.forEach(r => {
+    const key = r.deadline || 'Unknown';
+    if (!groups[key]) groups[key] = [];
+    groups[key].push(r);
+  });
+  const sorted = Object.keys(groups).sort();
+  sorted.forEach(date => {
+    const dl = daysLeft(date);
+    const isGone = dl < 0;
+    const isToday = dl === 0;
+    const isUrgent = dl >= 0 && dl <= 2;
+
+    const grp = document.createElement('div');
+    grp.className = 'timeline-group';
+    const badge = isGone ? '<span class="tl-badge tl-past">Past</span>' :
+      isToday ? '<span class="tl-badge tl-today">Today</span>' :
+      isUrgent ? `<span class="tl-badge tl-urgent">${dl}d left</span>` : '';
+
+    grp.innerHTML = `<div class="timeline-date">${date} ${badge}</div><div class="timeline-items" id="tg-${date.replace(/-/g,'_')}"></div>`;
+    tl.appendChild(grp);
+
+    const container = grp.querySelector('.timeline-items');
+    groups[date].forEach(r => {
+      const chip = document.createElement('div');
+      const dl2 = daysLeft(r.deadline);
+      chip.className = `tl-chip${r.filled?' filled-chip':''}${dl2 >= 0 && dl2 <= 2 && !r.filled?' urgent-chip':''}`;
+      chip.innerHTML = `<span class="tl-inst">${r.inst}</span><span class="tl-name">${r.course}</span>`;
+      if (r.link && r.link !== '#' && !r.filled && dl2 >= 0) {
+        chip.style.cursor = 'pointer';
+        chip.onclick = () => window.open(r.link, '_blank');
+      }
+      container.appendChild(chip);
+    });
+  });
+}
+
+function render() {
+  const filtered = getFiltered();
+  const sorted = sortItems(filtered);
+
+  document.getElementById('result-count').textContent = `${sorted.length} of ${DATA.length} courses`;
+
+  updateStats();
+  buildTabs(getFiltered());
+
+  if (currentView === 'grid') renderGrid(sorted);
+  else if (currentView === 'list') renderList(sorted);
+  else renderTimeline(sorted);
+}
+
+function setView(v) {
+  currentView = v;
+  document.getElementById('grid-view').style.display = v === 'grid' ? 'grid' : 'none';
+  document.getElementById('list-view').style.display = v === 'list' ? 'block' : 'none';
+  document.getElementById('timeline-view').style.display = v === 'timeline' ? 'block' : 'none';
+  ['grid','list','timeline'].forEach(n => {
+    document.getElementById('vbtn-'+n).classList.toggle('active', n === v);
+  });
+  render();
+}
+
+function resetFilters() {
+  document.getElementById('search').value = '';
+  document.getElementById('filt-status').value = 'all';
+  document.getElementById('filt-chance').value = 'all';
+  document.getElementById('filt-type').value = 'all';
+  document.getElementById('filt-subject').value = 'all';
+  document.getElementById('sort').value = 'deadline';
+  document.getElementById('hide-filled').checked = false;
+  document.getElementById('hide-closed').checked = false;
+  activeTab = 'all';
+  currentSort = 'deadline';
+  currentSortDir = 1;
+  render();
+}
+
+function sortByCol(col) {
+  if (currentSort === col) currentSortDir *= -1;
+  else { currentSort = col; currentSortDir = 1; }
+  render();
+}
+
+function toggleNote(i) {
+  const area = document.getElementById('note-' + i);
+  area.style.display = area.style.display === 'block' ? 'none' : 'block';
+}
+
+function saveNote(i, val) {
+  notes[i] = val;
+  localStorage.setItem('mtech_notes', JSON.stringify(notes));
+}
+
+function toggleFilled(i) {
+  DATA[i].filled = !DATA[i].filled;
+  filledState[i] = DATA[i].filled;
+  localStorage.setItem('mtech_filled', JSON.stringify(filledState));
+  render();
+}
+
+function exportCSV() {
+  const headers = ['Institute','Course','Subject','Type','Priority','Deadline','Days Left','Fee','Status','Link'];
+  const rows = DATA.map(r => {
+    const dl = daysLeft(r.deadline);
+    const isGone = dl < 0;
+    const status = r.filled ? 'Filled' : isGone ? 'Closed' : 'Open';
+    const daysStr = isGone ? 'Expired' : dl + ' days';
+    return [r.inst, r.course, r.subject, r.type, r.chance||'', r.deadline, daysStr, r.fee, status, r.link].map(v => `"${v}"`).join(',');
+  });
+  const csv = [headers.join(','), ...rows].join('\n');
+  const a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+  a.download = 'mtech_admissions_2026.csv';
+  a.click();
+}
+
+function printView() { window.print(); }
+
+function copyMustList() {
+  const must = DATA.filter(r => r.chance === 'Must' && !r.filled && daysLeft(r.deadline) >= 0);
+  const text = must.map(r => `${r.inst} — ${r.course} (Deadline: ${r.deadline}, Fee: ₹${r.fee})`).join('\n');
+  navigator.clipboard.writeText(text).then(() => {
+    alert('Must-apply list copied to clipboard!\n\n' + text);
+  });
+}
+
+// Wire up events
+['search','filt-status','filt-chance','filt-type','filt-subject','sort'].forEach(id => {
+  document.getElementById(id).addEventListener('input', render);
+  document.getElementById(id).addEventListener('change', render);
+});
+
+['hide-filled','hide-closed'].forEach(id => {
+  document.getElementById(id).addEventListener('change', render);
+});
+
+document.getElementById('sort').addEventListener('change', function() {
+  currentSort = this.value.replace('-desc','');
+  currentSortDir = this.value.includes('-desc') ? -1 : 1;
+  render();
+});
+
+// Initial render
+render();
+</script>
+</body>
+</html>
